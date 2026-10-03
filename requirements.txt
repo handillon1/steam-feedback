@@ -1,0 +1,9 @@
+requests
+pandas
+pyarrow
+psycopg[binary]
+python-dotenv
+beautifulsoup4
+tenacity
+pytest
+ipykernel
