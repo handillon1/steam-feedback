@@ -83,19 +83,17 @@ Findings describe English-speaking reviewers. CS2 has 1.5M English reviews out o
 ### L3. Candidate pool comes from charts
 The pool is built from most-played and top-release charts, so it leans toward very large and recently released games. Older mid-size games that aren't on any chart can't enter the sample.
 
-## Open questions (decide before the first scheduled run)
+### D11. The game list is frozen
+- **Decision:** select ~300 games once, before the first scheduled run; never add games later. Drops (delisted, reviews disabled) are logged with date and reason, and their earlier data is kept.
+- **Why:** week 7 compares the same games before and after patches. A monthly refresh would move games in and out mid-study.
+- **Rejected:** monthly refresh.
 
-### O1. Fixed list or monthly refresh?
-Week 7 compares the same games before and after their patches. If the list is refreshed monthly, games enter and leave mid-study and the comparison gets messy.
-- **Option A:** freeze the ~300 for the whole project and log the reason for any game dropped later.
-- **Option B:** refresh monthly, but analyze only games present the whole time.
+### D12. Low-patch games are kept on purpose
+- **Decision:** don't filter on patching. Target ~75–80% patch-active and ~20–25% low-patch games.
+- **Why:** dropping non-patchers selects the sample on the treatment. The main week 7 comparison is active games that didn't patch a given topic at the time; low-patch games keep contrast but may be declining, so they aren't the primary comparison.
+- **Rejected:** requiring a patch in the last 12 months.
 
-### O2. Keep games with no patches?
-D3 drops games with no detectable patch posts in 12 months. The project plan says to keep some games that didn't patch, because week 7 needs them as a comparison group.
-- **Option A:** keep a set share of non-patching games (for example 20–25%) on purpose.
-- **Option B:** drop them, and rely on "not yet patched" games as the comparison (weaker if most games patch often).
-
-### O3. Rank by a 100-review rate?
-For big games, the newest 100 reviews span less than a day (CS2: about 2.3 hours), so the rate reflects today's activity. A game in the middle of a review bomb or a big-patch spike ranks high, which is the regression-to-the-mean trap week 7 has to handle.
-- **Option A:** use the 100-review rate only as a pass/fail threshold, and pick the 300 by stratified sampling (genre, size, patching or not).
-- **Option B:** rank by a rate over a fixed window, such as 30 days. More accurate, but costs more pages for big games.
+### D13. English review rate is a threshold, not a ranking
+- **Decision:** keep candidates with ≥1 English review/day; group by size (1–10, 10–100, 100+/day), main genre tag and patch activity; draw randomly within groups with a fixed, logged seed. Cap the 100+/day group at ~40 games.
+- **Why:** the 100-review rate can span hours for big games, so ranking on it would select for current spikes (review bombs, patch surges). As a low bar, that noise doesn't change who passes.
+- **Rejected:** taking the top 300 by rate.
