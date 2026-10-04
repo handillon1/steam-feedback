@@ -1,0 +1,89 @@
+{
+  "query_summary": {
+    "num_reviews": 100,
+    "review_score": 9,
+    "review_score_desc": "Overwhelmingly Positive",
+    "total_positive": 462183,
+    "total_negative": 5393,
+    "total_reviews": 467576
+  },
+  "reviews": [
+    {
+      "recommendationid": "236905531",
+      "author": {
+        "steamid": "76561190000000000",
+        "num_reviews": 3,
+        "playtime_forever": 2510,
+        "playtime_last_two_weeks": 1,
+        "playtime_at_review": 2510,
+        "last_played": 1791137339
+      },
+      "language": "english",
+      "review": "One of the best indie games of all time. If you like cozy games, this one is a no brainer purchase.",
+      "timestamp_created": 1791137394,
+      "timestamp_updated": 1791137394,
+      "voted_up": true,
+      "votes_up": 0,
+      "votes_funny": 0,
+      "weighted_vote_score": 0.5,
+      "comment_count": 0,
+      "steam_purchase": true,
+      "received_for_free": false,
+      "written_during_early_access": false,
+      "primarily_steam_deck": false,
+      "refunded": false
+    },
+    {
+      "recommendationid": "236904771",
+      "author": {
+        "steamid": "76561190000000001",
+        "num_reviews": 3,
+        "playtime_forever": 19226,
+        "playtime_last_two_weeks": 257,
+        "playtime_at_review": 19226,
+        "last_played": 1791137041
+      },
+      "language": "english",
+      "review": "amazing game with or without mods! :DDD",
+      "timestamp_created": 1791136923,
+      "timestamp_updated": 1791136923,
+      "voted_up": true,
+      "votes_up": 0,
+      "votes_funny": 0,
+      "weighted_vote_score": 0.5,
+      "comment_count": 0,
+      "steam_purchase": true,
+      "received_for_free": false,
+      "written_during_early_access": false,
+      "primarily_steam_deck": false,
+      "refunded": false
+    },
+    {
+      "recommendationid": "236901659",
+      "author": {
+        "steamid": "76561190000000002",
+        "num_reviews": 1,
+        "playtime_forever": 4265,
+        "playtime_last_two_weeks": 4300,
+        "playtime_at_review": 4235,
+        "last_played": 1791136564
+      },
+      "language": "english",
+      "review": "as an og terraria fan , this too is very good and is my current comfort game ^_^ the crossover stuff between stardew and terraria is awesome",
+      "timestamp_created": 1791134758,
+      "timestamp_updated": 1791134758,
+      "voted_up": true,
+      "votes_up": 0,
+      "votes_funny": 0,
+      "weighted_vote_score": 0.5,
+      "comment_count": 0,
+      "steam_purchase": true,
+      "received_for_free": false,
+      "written_during_early_access": false,
+      "primarily_steam_deck": false,
+      "refunded": false
+    }
+  ],
+  "cursor": "AoJw77CxgaEDfNiqhwc=",
+  "total_matching": 467576
+}

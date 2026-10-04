@@ -1,0 +1,42 @@
+{
+  "query_summary": {
+    "num_reviews": 100,
+    "review_score": 8,
+    "review_score_desc": "Very Positive",
+    "total_positive": 292521,
+    "total_negative": 18107,
+    "total_reviews": 310628
+  },
+  "reviews": [
+    {
+      "recommendationid": "234868857",
+      "author": {
+        "steamid": "76561190000000000",
+        "num_reviews": 8,
+        "playtime_forever": 28680,
+        "playtime_last_two_weeks": 1249,
+        "playtime_at_review": 27430,
+        "last_played": 1791059202
+      },
+      "language": "english",
+      "review": " This game was in production for an incredibly long time which usually I wouldn't mind but there is a staggeringly lacking amount of Quality of Life updates that I thought for sure would be coming for the full release but they never did.\r\nNo equipment sheet for equipped items.\r\nNo server settings fo",
+      "timestamp_created": 1788986029,
+      "timestamp_updated": 1788986029,
+      "voted_up": false,
+      "votes_up": 720,
+      "votes_funny": 104,
+      "weighted_vote_score": 0.6697536706924438,
+      "comment_count": 0,
+      "steam_purchase": true,
+      "received_for_free": false,
+      "written_during_early_access": false,
+      "developer_response": "Hello there and thank you for your review! \n\nSome good points in there and I personally look forward to improving QOL even after 1.0 and will take your feedback, but I just wanted to let you know regarding your main bullet points, some SPOILERS for 1.0 below:\n* No equipment slots since we the hotbar",
+      "timestamp_dev_responded": 1789027653,
+      "primarily_steam_deck": false,
+      "refunded": false
+    }
+  ],
+  "cursor": "AoIFQFZGK2AAAABxlPSGBw==",
+  "day_range_used": 30,
+  "total_matching": 8399
+}

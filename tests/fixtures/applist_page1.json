@@ -1,0 +1,606 @@
+{
+  "apps": [
+    {
+      "appid": 10,
+      "name": "Counter-Strike",
+      "last_modified": 1745368572,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 20,
+      "name": "Team Fortress Classic",
+      "last_modified": 1745368565,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 30,
+      "name": "Day of Defeat",
+      "last_modified": 1745368580,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 40,
+      "name": "Deathmatch Classic",
+      "last_modified": 1745368570,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 50,
+      "name": "Half-Life: Opposing Force",
+      "last_modified": 1745368539,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 60,
+      "name": "Ricochet",
+      "last_modified": 1745368568,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 70,
+      "name": "Half-Life",
+      "last_modified": 1745368462,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 80,
+      "name": "Counter-Strike: Condition Zero",
+      "last_modified": 1745368574,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 130,
+      "name": "Half-Life: Blue Shift",
+      "last_modified": 1745368541,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 220,
+      "name": "Half-Life 2",
+      "last_modified": 1745368545,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 240,
+      "name": "Counter-Strike: Source",
+      "last_modified": 1745368575,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 300,
+      "name": "Day of Defeat: Source",
+      "last_modified": 1763407002,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 320,
+      "name": "Half-Life 2: Deathmatch",
+      "last_modified": 1749481506,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 360,
+      "name": "Half-Life Deathmatch: Source",
+      "last_modified": 1745368549,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 400,
+      "name": "Portal",
+      "last_modified": 1745368554,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 440,
+      "name": "Team Fortress 2",
+      "last_modified": 1757348372,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 500,
+      "name": "Left 4 Dead",
+      "last_modified": 1745368560,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 550,
+      "name": "Left 4 Dead 2",
+      "last_modified": 1772742214,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 570,
+      "name": "Dota 2",
+      "last_modified": 1769535998,
+      "price_change_number": 38162533
+    },
+    {
+      "appid": 620,
+      "name": "Portal 2",
+      "last_modified": 1790187113,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 630,
+      "name": "Alien Swarm",
+      "last_modified": 1763407010,
+      "price_change_number": 23464127
+    },
+    {
+      "appid": 730,
+      "name": "Counter-Strike 2",
+      "last_modified": 1789251637,
+      "price_change_number": 38741852
+    },
+    {
+      "appid": 1002,
+      "name": "Rag Doll Kung Fu",
+      "last_modified": 1611415705,
+      "price_change_number": 26388145
+    },
+    {
+      "appid": 1200,
+      "name": "Red Orchestra: Ostfront 41-45",
+      "last_modified": 1789667237,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 1250,
+      "name": "Killing Floor",
+      "last_modified": 1789667388,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 1300,
+      "name": "SiN Episodes: Emergence",
+      "last_modified": 1790276714,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 1313,
+      "name": "SiN Gold (1998)",
+      "last_modified": 1790276667,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 1500,
+      "name": "Darwinia",
+      "last_modified": 1779028568,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 1510,
+      "name": "Uplink",
+      "last_modified": 1739068939,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 1520,
+      "name": "DEFCON",
+      "last_modified": 1739091415,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 1530,
+      "name": "Multiwinia",
+      "last_modified": 1739429210,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 1600,
+      "name": "Dangerous Waters",
+      "last_modified": 1759951459,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 1610,
+      "name": "Space Empires IV Deluxe",
+      "last_modified": 1759953528,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 1620,
+      "name": "Jagged Alliance 2 Gold",
+      "last_modified": 1764098252,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 1630,
+      "name": "Disciples II: Rise of the Elves ",
+      "last_modified": 1764279401,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 1640,
+      "name": "Disciples II: Gallean's Return",
+      "last_modified": 1759955914,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 1670,
+      "name": "Iron Warriors: T-72 Tank Command ",
+      "last_modified": 1775918963,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 1690,
+      "name": "Space Empires V",
+      "last_modified": 1759953536,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 1700,
+      "name": "Arx Fatalis",
+      "last_modified": 1781905024,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 1900,
+      "name": "Earth 2160",
+      "last_modified": 1623327678,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 1930,
+      "name": "Two Worlds Epic Edition",
+      "last_modified": 1694869345,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 2100,
+      "name": "Dark Messiah of Might & Magic",
+      "last_modified": 1790190232,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 2200,
+      "name": "Quake III Arena",
+      "last_modified": 1782164859,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 2210,
+      "name": "Quake 4",
+      "last_modified": 1664372514,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 2270,
+      "name": "Wolfenstein 3D",
+      "last_modified": 1750784646,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 2280,
+      "name": "DOOM + DOOM II",
+      "last_modified": 1790284857,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 2310,
+      "name": "Quake",
+      "last_modified": 1786035741,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 2320,
+      "name": "Quake II",
+      "last_modified": 1750784724,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 2400,
+      "name": "The Ship: Murder Party",
+      "last_modified": 1594373405,
+      "price_change_number": 39418228
+    },
+    {
+      "appid": 2420,
+      "name": "The Ship: Single Player",
+      "last_modified": 1447350944,
+      "price_change_number": 0
+    },
+    {
+      "appid": 2450,
+      "name": "Bloody Good Time",
+      "last_modified": 1682459523,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 2500,
+      "name": "Shadowgrounds",
+      "last_modified": 1725011450,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 2520,
+      "name": "Gumboy - Crazy Adventures™",
+      "last_modified": 1743179737,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 2540,
+      "name": "RIP - Trilogy™",
+      "last_modified": 1501868093,
+      "price_change_number": 26388145
+    },
+    {
+      "appid": 2590,
+      "name": "Alpha Prime",
+      "last_modified": 1748433916,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 2600,
+      "name": "Vampire: The Masquerade - Bloodlines",
+      "last_modified": 1604376441,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 2610,
+      "name": "GUN™",
+      "last_modified": 1499877030,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 2620,
+      "name": "Call of Duty® (2003)",
+      "last_modified": 1731699308,
+      "price_change_number": 38969706
+    },
+    {
+      "appid": 2630,
+      "name": "Call of Duty® 2",
+      "last_modified": 1780962161,
+      "price_change_number": 38969706
+    },
+    {
+      "appid": 2640,
+      "name": "Call of Duty: United Offensive",
+      "last_modified": 1780962034,
+      "price_change_number": 38969706
+    },
+    {
+      "appid": 2700,
+      "name": "RollerCoaster Tycoon® 3: Platinum",
+      "last_modified": 1733161073,
+      "price_change_number": 0
+    },
+    {
+      "appid": 2710,
+      "name": "Act of War: Direct Action",
+      "last_modified": 1727869627,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 2720,
+      "name": "ThreadSpace: Hyperbol",
+      "last_modified": 1635471605,
+      "price_change_number": 33078735
+    },
+    {
+      "appid": 2800,
+      "name": "X2: The Threat",
+      "last_modified": 1762271718,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 2810,
+      "name": "X3: Reunion",
+      "last_modified": 1762272013,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 2820,
+      "name": "X3: Terran Conflict",
+      "last_modified": 1762272051,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 2840,
+      "name": "X: Beyond the Frontier",
+      "last_modified": 1762272682,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 2850,
+      "name": "X: Tension",
+      "last_modified": 1762271546,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 2870,
+      "name": "X Rebirth",
+      "last_modified": 1762271301,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 2900,
+      "name": "688(I) Hunter/Killer",
+      "last_modified": 1759950629,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 2910,
+      "name": "Fleet Command",
+      "last_modified": 1759951826,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 2920,
+      "name": "Sub Command",
+      "last_modified": 1759953566,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 2990,
+      "name": "FlatOut 2",
+      "last_modified": 1765237363,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 3010,
+      "name": "Xpand Rally",
+      "last_modified": 1729249898,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 3020,
+      "name": "Call of Juarez",
+      "last_modified": 1729249870,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 3050,
+      "name": "Xpand Rally Xtreme",
+      "last_modified": 1729249907,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 3130,
+      "name": "Men of War: Red Tide",
+      "last_modified": 1773656494,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 3170,
+      "name": "King's Bounty: Armored Princess",
+      "last_modified": 1786626361,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 3230,
+      "name": "Genesis Rising",
+      "last_modified": 1727863478,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 3260,
+      "name": "Safecracker: The Ultimate Puzzle Adventure",
+      "last_modified": 1790150767,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 3270,
+      "name": "Painkiller Overdose",
+      "last_modified": 1640259811,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 3300,
+      "name": "Bejeweled 2 Deluxe",
+      "last_modified": 1722544274,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 3310,
+      "name": "Chuzzle Deluxe",
+      "last_modified": 1729270121,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 3320,
+      "name": "Insaniquarium Deluxe",
+      "last_modified": 1615205929,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 3330,
+      "name": "Zuma Deluxe",
+      "last_modified": 1627918693,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 3340,
+      "name": "AstroPop Deluxe",
+      "last_modified": 1776958556,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 3350,
+      "name": "Bejeweled Deluxe",
+      "last_modified": 1628006310,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 3360,
+      "name": "Big Money! Deluxe",
+      "last_modified": 1776959856,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 3380,
+      "name": "Dynomite Deluxe",
+      "last_modified": 1776959941,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 3390,
+      "name": "Feeding Frenzy 2 Deluxe",
+      "last_modified": 1615206261,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 3400,
+      "name": "Hammer Heads Deluxe",
+      "last_modified": 1584807568,
+      "price_change_number": 0
+    },
+    {
+      "appid": 3410,
+      "name": "Heavy Weapon Deluxe",
+      "last_modified": 1737677403,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 3420,
+      "name": "Iggle Pop Deluxe",
+      "last_modified": 1776961169,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 3430,
+      "name": "Pizza Frenzy Deluxe",
+      "last_modified": 1776961593,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 3450,
+      "name": "Typer Shark! Deluxe",
+      "last_modified": 1584807149,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 3460,
+      "name": "Talismania Deluxe",
+      "last_modified": 1776961670,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 3480,
+      "name": "Peggle Deluxe",
+      "last_modified": 1777394376,
+      "price_change_number": 39392500
+    },
+    {
+      "appid": 3483,
+      "name": "Peggle Extreme",
+      "last_modified": 1702414944,
+      "price_change_number": 26253459
+    },
+    {
+      "appid": 3490,
+      "name": "Venice Deluxe",
+      "last_modified": 1614183181,
+      "price_change_number": 0
+    },
+    {
+      "appid": 3500,
+      "name": "Mystery P.I.™ - The Lottery Ticket",
+      "last_modified": 1776961352,
+      "price_change_number": 39392500
+    }
+  ],
+  "have_more_results": true,
+  "last_appid": 3500
+}

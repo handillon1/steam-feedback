@@ -1,0 +1,84 @@
+{
+  "query_summary": {
+    "num_reviews": 100
+  },
+  "reviews": [
+    {
+      "recommendationid": "236801268",
+      "author": {
+        "steamid": "76561190000000000",
+        "num_reviews": 8,
+        "playtime_forever": 24293,
+        "playtime_last_two_weeks": 0,
+        "playtime_at_review": 24293,
+        "last_played": 1655997449
+      },
+      "language": "english",
+      "review": "Back in 2021/2022 I was attempting to 100% this game, with spreadsheets and calendars so I knew exactly what I was missing and what time windows I had to complete specific things. And doing this genuinely taught me something about life. \n\nIts very easy to hyperfixate on one specific thing, and negle",
+      "timestamp_created": 1791046337,
+      "timestamp_updated": 1791046337,
+      "voted_up": true,
+      "votes_up": 0,
+      "votes_funny": 0,
+      "weighted_vote_score": 0.5,
+      "comment_count": 0,
+      "steam_purchase": true,
+      "received_for_free": false,
+      "written_during_early_access": false,
+      "primarily_steam_deck": false,
+      "refunded": false
+    },
+    {
+      "recommendationid": "236798452",
+      "author": {
+        "steamid": "76561190000000001",
+        "num_reviews": 1,
+        "playtime_forever": 2396,
+        "playtime_last_two_weeks": 2335,
+        "playtime_at_review": 1790,
+        "last_played": 1791135893
+      },
+      "language": "english",
+      "review": "its so peaceful that i can just shut of my mind and let the day go by",
+      "timestamp_created": 1791044315,
+      "timestamp_updated": 1791044315,
+      "voted_up": true,
+      "votes_up": 0,
+      "votes_funny": 0,
+      "weighted_vote_score": 0.5,
+      "comment_count": 0,
+      "steam_purchase": true,
+      "received_for_free": false,
+      "written_during_early_access": false,
+      "primarily_steam_deck": false,
+      "refunded": false
+    },
+    {
+      "recommendationid": "236797643",
+      "author": {
+        "steamid": "76561190000000002",
+        "num_reviews": 2,
+        "playtime_forever": 3630,
+        "playtime_last_two_weeks": 1823,
+        "playtime_at_review": 3540,
+        "last_played": 1791067625
+      },
+      "language": "english",
+      "review": "best game ever",
+      "timestamp_created": 1791043783,
+      "timestamp_updated": 1791043783,
+      "voted_up": true,
+      "votes_up": 0,
+      "votes_funny": 0,
+      "weighted_vote_score": 0.5,
+      "comment_count": 0,
+      "steam_purchase": true,
+      "received_for_free": false,
+      "written_during_early_access": false,
+      "primarily_steam_deck": false,
+      "refunded": false
+    }
+  ],
+  "cursor": "AoJ4ppeB/aADfq/khgc=",
+  "total_matching": 467576
+}
