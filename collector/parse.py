@@ -1,6 +1,8 @@
 """Turn Steam responses into clean rows. No network here: everything is testable with saved fixtures."""
 import re
 
+from bs4 import BeautifulSoup
+
 SECONDS_PER_DAY = 86400
 MIN_RATE_SPAN = 3600  # an hour: stops a near-zero span blowing up the rate without capping busy games
 
@@ -69,3 +71,18 @@ def is_patch(post: dict) -> bool:
     "update") and dates like "10.05.2026" (the version-number pattern).
     """
     return "patchnotes" in (post.get("tags") or []) or bool(_PATCH_TITLE.search(post["title"]))
+
+
+def parse_search_results(page: dict) -> tuple[list[int], int]:
+    """App IDs from one store search page (infinite=1 JSON), in rank order, plus how many rows were skipped.
+
+    Bundles and packages have no data-ds-appid or list several app IDs ("1,2,3"); they aren't one game, so they're skipped.
+    """
+    appids, skipped = [], 0
+    for row in BeautifulSoup(page["results_html"], "html.parser").select("a.search_result_row"):
+        appid = row.get("data-ds-appid", "")
+        if appid.isdigit():
+            appids.append(int(appid))
+        else:
+            skipped += 1
+    return appids, skipped

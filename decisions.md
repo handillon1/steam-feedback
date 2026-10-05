@@ -19,7 +19,8 @@ Each entry records what was decided, why, and what was rejected. Evidence for th
 ### D3. Game selection: chart-based candidate pool, filtered by English review rate
 - **Problem:** GetAppList returns about 190k games. Checking each one at 1 call/sec would take more than 2 days, so don't scan the full list.
 - **Decision:**
-  1. **Candidates:** `ISteamChartsService/GetMostPlayedGames` (top 100 by players) plus the app IDs from `ISteamChartsService/GetTopReleasesPages` (monthly "top releases" lists). That gives a few hundred to ~1,000 apps.
+  1. **Candidates:** `ISteamChartsService/GetMostPlayedGames` (top 100 by players), the app IDs from `ISteamChartsService/GetTopReleasesPages` (monthly "top releases" lists), and the top 1,500 of the US store's top sellers (`store.steampowered.com/search/results/?filter=topsellers&category1=998&cc=us&infinite=1`, 15 pages of 100). The two charts alone gave only 183 apps, too few for 300. Snapshot taken 2026-10-05; pages are cached, so reruns reuse it. Bundle/package rows are skipped and counted.
+     - **Why top sellers, US:** the store's "User Reviews" sort ranks by % positive weighted by volume, not by review count, so it would pull in small, well-liked games (checked 2026-10-05). Top sellers covers a broad range of sizes. `cc=us` matches D8, and global top sellers would add games sold mostly outside English-speaking markets that would fail the English review bar anyway.
   2. **Type check:** appdetails for each candidate; keep `type == "game"` and `release_date.coming_soon == false`; drop apps that return `success: false`.
   3. **English review rate:** one reviews call per candidate (`filter=1&languages[0]=english&purchase_type=1&num_per_page=100`). Rate = number of reviews ÷ days from the oldest of those 100 to now.
   4. **Threshold:** keep games with at least ~1 English review/day, then pick ~300 (see open questions O1–O3).
@@ -81,19 +82,23 @@ With `purchase_type=1`, only Deadlock (1422450) in the top 100 returned nothing;
 Findings describe English-speaking reviewers. CS2 has 1.5M English reviews out of 5.3M total.
 
 ### L3. Candidate pool comes from charts
-The pool is built from most-played and top-release charts, so it leans toward very large and recently released games. Older mid-size games that aren't on any chart can't enter the sample.
+The pool is built from most-played, top releases and US top sellers. All three lean toward games that are popular right now, so steady mid-size games that aren't trending, and free games with little revenue, are underrepresented. Top sellers ranks by current revenue, so the pool also favors paid games and games that were on discount on the snapshot day (2026-10-05).
 
 ### D11. The game list is frozen
 - **Decision:** select ~300 games once, before the first scheduled run; never add games later. Drops (delisted, reviews disabled) are logged with date and reason, and their earlier data is kept.
 - **Why:** week 7 compares the same games before and after patches. A monthly refresh would move games in and out mid-study.
 - **Rejected:** monthly refresh.
 
-### D12. Low-patch games are kept on purpose
-- **Decision:** don't filter on patching. Target ~75–80% patch-active and ~20–25% low-patch games.
-- **Why:** dropping non-patchers selects the sample on the treatment. The main week 7 comparison is active games that didn't patch a given topic at the time; low-patch games keep contrast but may be declining, so they aren't the primary comparison.
-- **Rejected:** requiring a patch in the last 12 months.
+### D12. Patch activity is not used in selection
+- **Decision:** the draw is grouped by size and main genre only. `patches_6mo` is recorded in games.csv for information.
+- **Why:** title/tag patch detection (D9) is unreliable: 553 of 1,370 survivors (40%) showed zero patches in 6 months, including Rust, Overwatch and No Man's Sky, which name their updates ("LIVESTOCK", "COSMO", "Season 4") without patch keywords or tags. Grouping on a measure this noisy would control nothing.
+- **Changed from:** targeting ~75–80% patch-active games (2026-10-04).
+- **Follow-up:** better patch detection in weeks 2–3 (full post text, Gemini classification, possibly Steam's event categories); the patch-active share of the final 300 is measured then.
+
+### L4. Title/tag patch detection misses named content updates
+Large live-service games often name updates without the word "patch" or a `patchnotes` tag. Until detection improves, patch counts undercount exactly the biggest updates.
 
 ### D13. English review rate is a threshold, not a ranking
-- **Decision:** keep candidates with ≥1 English review/day; group by size (1–10, 10–100, 100+/day), main genre tag and patch activity; draw randomly within groups with a fixed, logged seed. Cap the 100+/day group at ~40 games.
+- **Decision:** keep candidates with ≥1 English review/day; group by size and main genre; draw randomly within groups with a fixed, logged seed. Cap the 100+/day group at ~40 games.
 - **Why:** the 100-review rate can span hours for big games, so ranking on it would select for current spikes (review bombs, patch surges). As a low bar, that noise doesn't change who passes.
 - **Rejected:** taking the top 300 by rate.

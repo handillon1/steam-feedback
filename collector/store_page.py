@@ -6,7 +6,7 @@ empty data when the page changes.
 import json
 import re
 
-from collector import http
+from collector import steam_http
 
 # Gets past the age gate on mature games (see decisions.md).
 AGE_GATE_COOKIES = {"birthtime": "0", "lastagecheckage": "1-0-1990", "wants_mature_content": "1"}
@@ -20,14 +20,13 @@ class StorePageError(Exception):
 
 def fetch_store_page(appid):
     """Store page HTML. Raises if Steam didn't land us on /app/<appid>/ (age gate, removed app...)."""
-    r = http.get(
-        f"https://store.steampowered.com/app/{appid}/",
-        params={"cc": "us", "l": "english"},
+    html, final_url = steam_http.get_html(
+        f"https://store.steampowered.com/app/{appid}/?cc=us&l=english",
         cookies=AGE_GATE_COOKIES,
     )
-    if f"/app/{appid}/" not in r.url:
-        raise StorePageError(f"app {appid}: redirected to {r.url}")
-    return r.text
+    if f"/app/{appid}/" not in final_url:
+        raise StorePageError(f"app {appid}: redirected to {final_url}")
+    return html
 
 
 def parse_tags(html):

@@ -3,7 +3,8 @@ from pathlib import Path
 
 import pytest
 
-from collector.parse import REVIEW_FIELDS, english_rate_per_day, is_patch, parse_app_type, parse_reviews
+from collector.parse import (REVIEW_FIELDS, english_rate_per_day, is_patch, parse_app_type, parse_reviews,
+                             parse_search_results)
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -144,3 +145,26 @@ def test_known_false_positive_titles(title):
 ])
 def test_regular_announcement_is_not_a_patch(fixture, title):
     assert not is_patch(post_titled(load(fixture), title))
+
+
+# parse_search_results
+
+def test_search_results_real_page():
+    appids, skipped = parse_search_results(load("search_topsellers_page1.json"))
+    assert len(appids) + skipped == 100
+    assert 730 in appids  # Counter-Strike 2
+    assert len(set(appids)) == len(appids)
+
+
+def test_search_results_skip_bundles_and_packages():
+    html = (
+        '<a class="search_result_row ds_collapse_flag" data-ds-appid="730" href="x"></a>'
+        '<a class="search_result_row" data-ds-packageid="54029" data-ds-appid="1,2,3" href="x"></a>'
+        '<a class="search_result_row" data-ds-bundleid="232" href="x"></a>'
+        '<a class="search_result_row" data-ds-appid="413150" href="x"></a>'
+    )
+    assert parse_search_results({"results_html": html}) == ([730, 413150], 2)
+
+
+def test_search_results_empty_page():
+    assert parse_search_results({"results_html": ""}) == ([], 0)
