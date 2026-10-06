@@ -5,6 +5,7 @@ empty data when the page changes.
 """
 import json
 import re
+from urllib.parse import urlparse
 
 from collector import steam_http
 
@@ -24,7 +25,7 @@ def fetch_store_page(appid):
         f"https://store.steampowered.com/app/{appid}/?cc=us&l=english",
         cookies=AGE_GATE_COOKIES,
     )
-    if f"/app/{appid}/" not in final_url:
+    if not urlparse(final_url).path.startswith(f"/app/{appid}/"):
         raise StorePageError(f"app {appid}: redirected to {final_url}")
     return html
 
