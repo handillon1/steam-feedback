@@ -36,14 +36,6 @@ def _wait_for_rate_limit():
             time.sleep(remaining)
     _last_request_at = time.monotonic()
 
-
-@retry(
-    retry=retry_if_exception_type((TransientHTTPError, requests.Timeout, requests.ConnectionError)),
-    wait=wait_exponential(multiplier=2, min=2, max=60),
-    stop=stop_after_attempt(5),
-    reraise=True,
-)
-
 def _redact(params):
     """Copy of params safe to log: the API key is replaced with ***."""
     if not params:
