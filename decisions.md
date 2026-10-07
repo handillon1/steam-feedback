@@ -29,11 +29,17 @@ Each entry records what was decided, why, and what was rejected. Evidence for th
 - **Rejected:** scanning all 190k games (too slow); filtering on `total_reviews` (wrong measure).
 - top-releases chart only returned the Dec 2024–Feb 2025 lists, so it isn't contributing recent releases
 - Action is 58% of survivors' main genre. That's fine, because the draw is proportional, and tags for the final 300 handle week 7's matching
+- **Final funnel (run of 2026-10-06):**
+  - **Candidates:** 1,552 after dedupe: 100 most played, 83 top releases, and 1,369 new from top sellers. Top sellers gave 1,482 app IDs, and 18 bundle/package rows were skipped.
+  - **Type check:** 1,518 released games (34 dropped as not a released game).
+  - **Rate bar:** 1,383 games at 1+ English review/day (135 dropped).
+  - **Drawn:** 300. Sizes: 179 at 1–10/day, 82 at 10–100, 39 at 100+.
+  - **Patches:** 188 of 300 (63%) had a patch detected in the last 6 months (unreliable, L4).
 
 ### D4. Review request parameters
 - **Decision:** `filter=1`, `languages[0]=english`, `purchase_type=1`.
 - **Why `filter=1`:** the default sort is "most helpful in the last 30 days", and `filter=recent` is silently ignored. Verified: `timestamp_created` goes down across all reviews and across pages.
-- **Why `languages[0]=english`:** GetAppReviews is a protobuf service, so `language=english` and `languages=english` are silently ignored. English only looked filtered because it's the default; `languages[0]=schinese` proves the real filter works. The parser asserts every review's `language == "english"`.
+- **Why `languages[0]=english`:** GetAppReviews is a protobuf service, so `language=english` and `languages=english` are silently ignored. English only looked filtered because it's the default; `languages[0]=schinese` proves the real filter works. Stray non-English reviews (seen: one Turkish review in HITMAN's English results) are skipped and counted; the parser raises only if they're over 10% of a page of 10+ reviews, which would mean the filter broke.
 - **Why `purchase_type=1` (all):** the default `0` counts only reviews from Steam purchases. It hides 42% of CS2's English reviews and 100% of Marvel Rivals', so free-to-play games would be undercounted or missing. `steam_purchase` and `received_for_free` are stored so they can be filtered in the analysis.
 
 ### D5. Daily stopping rule
@@ -73,6 +79,7 @@ Each entry records what was decided, why, and what was rejected. Evidence for th
 - **Decision:** select ~300 games once, before the first scheduled run; never add games later. Drops (delisted, reviews disabled) are logged with date and reason, and their earlier data is kept.
 - **Why:** week 7 compares the same games before and after patches. A monthly refresh would move games in and out mid-study.
 - **Rejected:** monthly refresh.
+- Frozen 2026-10-06, seed 20261005, 300 games.
 
 ### D12. Patch activity is not used in selection
 - **Decision:** the draw is grouped by size and main genre only. `patches_6mo` is recorded in games.csv for information.

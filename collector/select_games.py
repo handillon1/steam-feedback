@@ -230,7 +230,9 @@ def main():
 
     def over_rate_bar(row):
         page = cached_json(f"reviews_{row['appid']}", REVIEWS, {"appid": row["appid"], **REVIEW_PARAMS})["response"]
-        reviews = parse_reviews(page)
+        reviews, skipped = parse_reviews(page)
+        if skipped:
+            log.info("app %s: skipped %d non-English review(s)", row["appid"], skipped)
         if not reviews:
             return "no reviews returned (L1)"
         rate = english_rate_per_day(reviews, now)

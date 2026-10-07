@@ -21,7 +21,7 @@ def post_titled(news, text):
 
 def test_reviews_drop_steamid_and_keep_playtime_at_review():
     page = load("reviews_413150_page1.json")
-    rows = parse_reviews(page)
+    rows, _ = parse_reviews(page)
     assert len(rows) == len(page["reviews"])
     assert all("author" not in r and "steamid" not in r for r in rows)
     assert rows[0]["playtime_at_review"] == page["reviews"][0]["author"]["playtime_at_review"]
@@ -31,25 +31,36 @@ def test_reviews_drop_steamid_and_keep_playtime_at_review():
 def test_reviews_have_fixed_columns_and_drop_unknown_fields():
     page = load("reviews_413150_page1.json")
     page["reviews"][0]["new_personal_field"] = "someone@example.com"
-    rows = parse_reviews(page)
+    rows, _ = parse_reviews(page)
     assert all(list(r) == REVIEW_FIELDS + ["playtime_at_review"] for r in rows)
     assert rows[0]["developer_response"] is None  # absent optional field
 
 
 def test_reviews_keep_developer_response():
-    rows = parse_reviews(load("reviews_892970_dev_response.json"))
+    rows, _ = parse_reviews(load("reviews_892970_dev_response.json"))
     assert rows[0]["developer_response"]
 
 
 def test_last_page_without_reviews_key_gives_no_rows():
     page = load("reviews_8200_end_of_stream.json")
     assert "reviews" not in page
-    assert parse_reviews(page) == []
+    assert parse_reviews(page) == ([], 0)
 
 
-def test_non_english_review_raises():
+def test_stray_non_english_review_is_skipped_and_counted():
     page = load("reviews_413150_page1.json")
+    page["reviews"] = page["reviews"][:3]
     page["reviews"][0]["language"] = "schinese"
+    rows, skipped = parse_reviews(page)
+    assert len(rows) == 2
+    assert skipped == 1
+
+
+def test_mostly_non_english_page_raises():
+    page = load("reviews_413150_page1.json")
+    page["reviews"] = [dict(r) for r in (page["reviews"] * 12)[:12]]
+    for review in page["reviews"][:9]:
+        review["language"] = "schinese"
     with pytest.raises(ValueError):
         parse_reviews(page)
 
@@ -57,7 +68,7 @@ def test_non_english_review_raises():
 # english_rate_per_day
 
 def test_rate_is_count_over_days_since_oldest():
-    rows = parse_reviews(load("reviews_413150_page1.json"))
+    rows, _ = parse_reviews(load("reviews_413150_page1.json"))
     oldest = min(r["timestamp_created"] for r in rows)
     assert english_rate_per_day(rows, now=oldest + 2 * 86400) == pytest.approx(len(rows) / 2)
 
@@ -79,7 +90,7 @@ def test_rate_span_is_at_least_an_hour():
 
 
 def test_rate_of_no_reviews_is_zero():
-    assert english_rate_per_day(parse_reviews(load("reviews_8200_end_of_stream.json")), now=0) == 0.0
+    assert english_rate_per_day(parse_reviews(load("reviews_8200_end_of_stream.json"))[0], now=0) == 0.0
 
 
 # parse_app_type

@@ -243,7 +243,7 @@ appid,source,name,type,coming_soon,genres,rate_per_day,rate_page_full,patches_6m
 1716740,top_sellers,Starfield,game,False,RPG,12.265,True,4,
 2543830,top_sellers,Way of the Hunter 2,game,False,Adventure|Simulation,14.8,True,20,
 1903340,top_sellers,Clair Obscur: Expedition 33,game,False,Action|RPG,48.166,True,2,
-1659040,top_sellers,HITMAN World of Assassination,game,False,Action|Adventure,,,,over the rate bar: ValueError: review 236992014 is 'turkish': language filter broke (D4)
+1659040,top_sellers,HITMAN World of Assassination,game,False,Action|Adventure,27.546,False,0,
 3008130,top_sellers,Dying Light: The Beast,game,False,Action|Adventure|RPG,29.807,True,2,
 4705510,top_sellers,Happy Wheels,game,False,Action|Casual|Indie|Racing,64.655,True,2,
 3489700,top_sellers,Stellar Blade™,game,False,Action|Adventure|RPG,12.246,True,0,
