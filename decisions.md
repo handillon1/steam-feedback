@@ -98,6 +98,7 @@ Each entry records what was decided, why, and what was rejected. Evidence for th
 - **Decision:** keep candidates with ≥1 English review/day; group by size and main genre; draw randomly within groups with a fixed, logged seed. Cap the 100+/day group at ~40 games.
 - **Why:** the 100-review rate can span hours for big games, so ranking on it would select for current spikes (review bombs, patch surges). As a low bar, that noise doesn't change who passes.
 - **Rejected:** taking the top 300 by rate.
+- **Validated (2026-10-08):** the rates measured at selection matched what was collected in the first 3 days: medians 3.2 vs 3.0 (1–10/day), 17.2 vs 15.0 (10–100), 131 vs 125 (100+). See R1.
 
 ### D14. Player counts every 4 hours keep partial snapshots
 - **Decision:** each run, one `GetNumberOfCurrentPlayers` call per game, written to `data/players/hour=YYYY-MM-DDTHH.parquet` (`appid`, `player_count`, `fetched_at`). Whatever succeeded is written; failed and skipped games go in the run summary (`data/players/_runs/`). The run exits 1 only if most games failed, or after 5 transient failures in a row (the same outage breaker as D5). An hour whose file exists is skipped, so a rerun changes nothing. A removed or unknown game is skipped and logged.
@@ -105,12 +106,36 @@ Each entry records what was decided, why, and what was rejected. Evidence for th
 - **Schedule:** every 4 hours at minute 7 (`7 */4 * * *`). Each run costs ~6 Actions minutes (setup plus 300 calls), so this is ~1,200 minutes a month; with reviews (~500), ~1,700 of the 2,000 included in GitHub Free for private repos. The file names allow hourly runs, but hourly would be ~4,300 minutes a month. Confirm real usage in Settings → Billing after a few days.
 - **Rejected:** all-or-nothing writes (loses data that can't be recovered); hourly runs (over the free minutes).
 
+### D15. GitHub Actions setup
+- **Decision:** two workflows (`reviews.yml` daily at 10:17 UTC, `players.yml` every 4 hours at minute 7), each: install pinned requirements, run pytest, collect, check, commit the data. Both share one `concurrency` group so they never push at the same time.
+- **Commit even after a failure:** the check and commit steps run unless the job was cancelled (`!cancelled()`). A failed reviews run still writes its last-chance day and run summary, and a partial player snapshot can't be fetched again, so the data is saved first and the job is still marked failed, which sends an email.
+- **No secrets needed:** reviews and player counts don't use the Steam API key.
+- **Requirements:** `requirements.txt` pins only what the collectors and tests import. A full `pip freeze` on Windows includes Windows-only packages (e.g. `pywin32`) that fail to install on the Linux runner; notebook packages are in `requirements-dev.txt`.
+- **Setup gotcha (2026-10-08):** the first push failed with exit code 128 because the repo let workflows only read. Fix: Settings → Actions → General → Workflow permissions → Read and write.
+
 ## Estimates (2026-10-04)
 
 ### E1. English reviews per day for a typical game
 - **Estimate:** about 30–40 per day, so 1 page per game on most days.
 - **Evidence:** across the top 100 most-played games, using the page-1 rate (newest 100 English reviews, all purchase types): median 77/day; ranks 51–100 median ~39/day; max ~1,170/day. A 300-game list goes deeper than the top 100, so the typical game will be at or below the ranks 51–100 figure. Stardew Valley gets ~96/day; CS2 ~1,050/day (about 11 pages).
 - **Daily run cost:** ~300 games × 1–2 pages plus a few heavy hitters ≈ 500–700 calls ≈ 10–12 minutes at 1 call/sec.
+
+- **Actual (first run, 2026-10-08):** median **3/day** in the 1–10 group, 15/day in 10–100, 125/day in 100+. The estimate was ~10× too high for a typical game because it came from the top 100 most-played games, and the frozen sample goes much deeper (179 of the 300 games get under 10/day).
+- **Actual run cost:** 625 calls (~11 minutes) for the full 3-day window; the busiest game used 59 pages.
+
+## Results
+
+### R1. First collection run (2026-10-08, manual)
+| Check | Result |
+| --- | --- |
+| Reviews collected | 33,956 for Oct 5–7 (11,820 / 11,663 / 10,473 per day) |
+| Games with reviews | 296 of 300 (the 4 without are in the 1–10/day group; zero reviews in 3 days is expected by chance for games near 1/day) |
+| Duplicate review IDs / non-English reviews | 0 / 0 |
+| Failed or missing games | none; all 3 day files written |
+| Most pages for one game | 59 of the 100-page cap (~40% headroom) |
+| Player counts | 300 of 300 games, no zeros |
+| Developer replies | 0.4% of reviews have a `developer_response` |
+| Share positive | 78.5% of reviews are thumbs-up |
 
 ## Known limitations
 
