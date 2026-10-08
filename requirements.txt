@@ -1,9 +1,9 @@
-requests
-pandas
-pyarrow
-psycopg[binary]
-python-dotenv
-beautifulsoup4
-tenacity
-pytest
-ipykernel
+# What the collectors and tests import, pinned. Installs on the Linux Actions runner; no Jupyter/Windows-only packages.
+beautifulsoup4==4.15.0
+pandas==3.0.6
+psycopg[binary]==3.3.6
+pyarrow==25.0.1
+pytest==9.1.1
+python-dotenv==1.2.4
+requests==2.34.2
+tenacity==9.1.4

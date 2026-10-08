@@ -1,0 +1,48 @@
+{
+  "appid": 892970,
+  "newsitems": [
+    {
+      "gid": "1823191198610897",
+      "title": "Patch 0.221.10 – Five Years of Valheim!",
+      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1823191198610897",
+      "is_external_url": true,
+      "author": "IronMontilyet",
+      "contents": "Greetings vikings!\n\nToday marks the five year anniversary since Valheim was first released into Early Access – and what an incredible five years it’s been!\n\nWe want to thank everyone who has been a part of our journey and our community since then, whether you started playing on day one or have just ",
+      "feedlabel": "Community Announcements",
+      "date": 1770022879,
+      "feedname": "steam_community_announcements",
+      "feed_type": 1,
+      "appid": 892970
+    },
+    {
+      "gid": "1844751498224366",
+      "title": "Patch 1.0.16",
+      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1844751498224366",
+      "is_external_url": true,
+      "author": "IronMontilyet",
+      "contents": "Further tweaks for you today, vikings! This one includes fixes for both terrain modification and for some achievements, so we hope this makes playing smoother for you all!\n\n[b]Due to some internal restrictions, the patch will require a few days to get uploaded to all platforms. Despite this, however",
+      "feedlabel": "Community Announcements",
+      "date": 1790338722,
+      "feedname": "steam_community_announcements",
+      "feed_type": 1,
+      "appid": 892970,
+      "tags": [
+        "patchnotes"
+      ]
+    },
+    {
+      "gid": "1845383656377310",
+      "title": "Word from the Devs: What a Month!",
+      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1845383656377310",
+      "is_external_url": true,
+      "author": "IronMontilyet",
+      "contents": "Greetings Vikings!\n\nWe can’t believe it’s only been a scant few weeks since we released 1.0. We’re so happy to see so many new and returning players alike, and we’re grateful for all the love you’ve shown us so far. Without you, we wouldn’t be here, so thank you!\n\nWe’re thrilled to say that we have ",
+      "feedlabel": "Community Announcements",
+      "date": 1790769511,
+      "feedname": "steam_community_announcements",
+      "feed_type": 1,
+      "appid": 892970
+    }
+  ],
+  "count": 3
+}

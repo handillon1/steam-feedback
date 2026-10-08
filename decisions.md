@@ -42,13 +42,20 @@ Each entry records what was decided, why, and what was rejected. Evidence for th
 - **Why `languages[0]=english`:** GetAppReviews is a protobuf service, so `language=english` and `languages=english` are silently ignored. English only looked filtered because it's the default; `languages[0]=schinese` proves the real filter works. Stray non-English reviews (seen: one Turkish review in HITMAN's English results) are skipped and counted; the parser raises only if they're over 10% of a page of 10+ reviews, which would mean the filter broke.
 - **Why `purchase_type=1` (all):** the default `0` counts only reviews from Steam purchases. It hides 42% of CS2's English reviews and 100% of Marvel Rivals', so free-to-play games would be undercounted or missing. `steam_purchase` and `received_for_free` are stored so they can be filtered in the analysis.
 
-### D5. Daily stopping rule
-- **Decision:** store the newest `timestamp_created` already collected per game. Each day, page from `cursor=*` with the D4 parameters, passing back each response's `cursor`. Stop when any of these is true:
+### D5. Daily stopping rule: overlapping 72-hour windows
+- **Decision:** each run pages every game back over the last 3 complete UTC days from `cursor=*` with the D4 parameters, passing back each response's `cursor`. Stop when any of these is true:
   - no `reviews` key comes back (end of stream; the key is missing, not an empty list)
   - the cursor comes back unchanged
-  - a review's `timestamp_created` is older than the newest one already collected (keep only the newer reviews from that page)
-- **Safety:** a maximum number of pages per game per run, so one review-bombed game can't stall the job.
+  - a page's oldest review is older than the window start (keep only the in-window reviews from that page)
+- **Output:** one file per complete UTC day, named by the date the reviews were created: `data/reviews/date=2026-10-07.parquet`. A day whose file already exists is skipped.
+- **Why:** it needs no saved state. Each review lands in exactly one file, a rerun changes nothing, and a failed run is filled in by the next one, as long as successful runs are at most 2 days apart (one missed daily run is recovered; two in a row lose a day). Overlapping windows plus skipping existing files is a standard pattern.
+- **Window:** `[today's UTC midnight − 3 days, today's UTC midnight)`, not "now − 72 hours", which would cut the first day in half and leave that half missing for good. Every day in the window gets a file, even an empty one, so a file existing means the day was collected.
+- **Writes, all-or-nothing with a last chance:** a clean run writes every day. If any game failed (network error after retries, a broken page, or hitting the page cap), the newer days wait for a clean run, but the oldest day is written anyway without the failed games' rows, because it leaves the window after this run. The missing `(appid, day)` pairs go in the run summary (`data/reviews/_runs/`) and the run exits 1 so the Action emails. Without the last chance, one game that fails every run (a review bomb past the cap, say) would cost every game those days. A removed game (permanent error) is skipped and logged, not failed.
+- **Why gaps are acceptable here:** reviews are historical. A missed (game, day) can be fetched later by paging further back, as a backfill would, so a gap is recoverable as long as it's recorded. Player counts are different: Steam only reports the current count, so a missed snapshot is gone forever (see D14).
+- **Outages:** after 5 transient failures in a row, the run stops, writes nothing, and exits 1. One failed game mid-run doesn't trip it; a Steam outage does, instead of burning ~2.5 hours on retries. The workflow job also has `timeout-minutes: 90` as a backstop.
+- **Safety:** at most 100 pages per game per run (CS2 needs ~42), so one review-bombed game can't stall the job.
 - **Dedupe:** on `recommendationid` when saving, because reviews posted during a run can shift the page boundaries.
+- **Changed from:** storing the newest `timestamp_created` already collected per game and stopping there (2026-10-04). That needed state the Action could find between runs.
 
 ### D6. Retry policy (`collector/steam_http.py`)
 - **Decision:** retry only errors that can go away (timeouts, connection errors, 429, 5xx), with exponential backoff and at most 5 attempts.
@@ -91,6 +98,12 @@ Each entry records what was decided, why, and what was rejected. Evidence for th
 - **Decision:** keep candidates with ≥1 English review/day; group by size and main genre; draw randomly within groups with a fixed, logged seed. Cap the 100+/day group at ~40 games.
 - **Why:** the 100-review rate can span hours for big games, so ranking on it would select for current spikes (review bombs, patch surges). As a low bar, that noise doesn't change who passes.
 - **Rejected:** taking the top 300 by rate.
+
+### D14. Player counts every 4 hours keep partial snapshots
+- **Decision:** each run, one `GetNumberOfCurrentPlayers` call per game, written to `data/players/hour=YYYY-MM-DDTHH.parquet` (`appid`, `player_count`, `fetched_at`). Whatever succeeded is written; failed and skipped games go in the run summary (`data/players/_runs/`). The run exits 1 only if most games failed, or after 5 transient failures in a row (the same outage breaker as D5). An hour whose file exists is skipped, so a rerun changes nothing. A removed or unknown game is skipped and logged.
+- **Why not all-or-nothing like D5:** Steam only reports the current count. A missed snapshot can't be fetched later, so holding back 299 good counts because one game failed would lose them for good.
+- **Schedule:** every 4 hours at minute 7 (`7 */4 * * *`). Each run costs ~6 Actions minutes (setup plus 300 calls), so this is ~1,200 minutes a month; with reviews (~500), ~1,700 of the 2,000 included in GitHub Free for private repos. The file names allow hourly runs, but hourly would be ~4,300 minutes a month. Confirm real usage in Settings → Billing after a few days.
+- **Rejected:** all-or-nothing writes (loses data that can't be recovered); hourly runs (over the free minutes).
 
 ## Estimates (2026-10-04)
 

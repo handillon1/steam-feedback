@@ -95,3 +95,11 @@ def parse_search_results(page: dict) -> tuple[list[int], int]:
         else:
             skipped += 1
     return appids, skipped
+
+
+def parse_player_count(body: dict) -> int | None:
+    """Current players from GetNumberOfCurrentPlayers, or None when Steam doesn't know the app (result != 1)."""
+    response = body["response"]
+    if response.get("result") != 1:
+        return None
+    return response.get("player_count")

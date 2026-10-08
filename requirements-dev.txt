@@ -1,0 +1,3 @@
+# Laptop only: notebooks. Not installed by the workflows.
+-r requirements.txt
+ipykernel==7.4.0

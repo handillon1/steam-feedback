@@ -25,15 +25,14 @@ from pathlib import Path
 
 from collector import steam_http
 from collector.parse import english_rate_per_day, is_patch, parse_app_type, parse_reviews, parse_search_results
+from collector.reviews import REVIEW_PARAMS, REVIEWS  # D4 lives in one place
 
 log = logging.getLogger(__name__)
 
 CHARTS = "https://api.steampowered.com/ISteamChartsService/"
 APPDETAILS = "https://store.steampowered.com/api/appdetails"
-REVIEWS = "https://api.steampowered.com/IUserReviewsService/GetAppReviews/v1/"
 NEWS = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/"
 SEARCH = "https://store.steampowered.com/search/results/"
-REVIEW_PARAMS = {"num_per_page": 100, "filter": 1, "languages[0]": "english", "purchase_type": 1}  # D4
 
 DATA = Path(__file__).resolve().parent.parent / "data"
 RAW = DATA / "selection_raw"
@@ -238,7 +237,7 @@ def main():
         rate = english_rate_per_day(reviews, now)
         # A full page means the rate comes from a short window: real, but noisier.
         row.update(rate_per_day=round(rate, 3), size=size_group(rate),
-                   rate_page_full=len(reviews) >= REVIEW_PARAMS["num_per_page"])
+                   rate_page_full=len(reviews) + skipped >= REVIEW_PARAMS["num_per_page"])
         return "" if rate >= MIN_RATE else f"under {MIN_RATE} English review/day"
 
     def patch_count(row):
