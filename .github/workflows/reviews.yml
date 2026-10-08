@@ -1,0 +1,41 @@
+name: Daily reviews
+
+on:
+  schedule:
+    - cron: "17 10 * * *"      # 10:17 UTC = 3:17 a.m. Pacific; odd minute to avoid the on-the-hour rush
+  workflow_dispatch:            # adds a "Run workflow" button for manual runs
+
+permissions:
+  contents: write               # lets the job push the data commit
+
+concurrency:
+  group: data-commit            # same group in both workflows: they queue instead of pushing at once
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90         # backstop if Steam is slow; normal runs take ~15 min
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m pytest -q
+      - name: Collect reviews
+        run: python -m collector.reviews
+      - name: Check data
+        if: ${{ !cancelled() }}
+        run: python -m checks.reviews
+      - name: Commit data
+        if: ${{ !cancelled() }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/reviews
+          git diff --cached --quiet && exit 0
+          git commit -m "Reviews collected $(date -u +%F)"
+          git pull --rebase
+          git push
