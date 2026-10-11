@@ -47,15 +47,16 @@ def window(now: int) -> tuple[int, int]:
     return today - WINDOW_DAYS * SECONDS_PER_DAY, today
 
 
-def fetch_window(appid: int, start: int, end: int, max_pages: int = MAX_PAGES) -> tuple[list[dict], dict]:
-    """English reviews created in [start, end), newest first, each tagged with appid. Pages from cursor=* (D5).
+def fetch_window(appid: int, start: int, end: int, max_pages: int = MAX_PAGES,
+                 cursor: str = "*") -> tuple[list[dict], dict]:
+    """English reviews created in [start, end), newest first, each tagged with appid. Pages from cursor (D5);
+    the default * is the newest review, and the backfill passes a later one (D16).
 
     Returns (rows, stats) with stats = {pages, rows, skipped, capped}. capped means it stopped at max_pages
     before reaching start, so the oldest days are incomplete.
     """
     rows, seen = [], set()
     stats = {"pages": 0, "rows": 0, "skipped": 0, "capped": False}
-    cursor = "*"
     while True:
         if stats["pages"] == max_pages:
             stats["capped"] = True
