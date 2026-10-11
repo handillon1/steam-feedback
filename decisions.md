@@ -120,6 +120,7 @@ Each entry records what was decided, why, and what was rejected. Evidence for th
 - **Hitting the cap is fine:** unlike D5, a capped game is written, not failed. For busy games, 5,000 reviews reaches back only weeks or months (Half-Life 2, ~34/day: back to 2026-04-20).
 - **How far back each game goes:** `data/backfill/reviews/_summary.json`, one entry per appid: `pages`, `rows`, `skipped`, `capped`, `earliest` (date of the oldest review fetched) and `complete_from` (the first day with every review). For an uncapped game, `complete_from` is the start of the year. A capped game stopped partway through its earliest day, so its `complete_from` is the day after `earliest`. Analyses that count reviews per day must start each game at its `complete_from`. Removed games and failures get an `error` entry and no file.
 - **Failures:** the same rules as `reviews.collect`. A transient failure or broken page means no file for that game and the run exits 1, so a rerun retries it. A permanent error is logged and skipped. After 5 transient failures in a row, the run stops. Each game's summary entry is saved before its parquet file, so a crash can leave an entry without a file (refetched and overwritten by the rerun), never a file without an entry.
+- **Results (2026-10-10):** 300 of 300 games, 847,438 reviews, 8,750 pages in ~3 hours, zero errors. 99 games hit the 5,000-review cap (see L5); coverage is in the `review_coverage` table.
 
 ## Estimates (2026-10-04)
 
@@ -145,6 +146,12 @@ Each entry records what was decided, why, and what was rejected. Evidence for th
 | Developer replies | 0.4% of reviews have a `developer_response` |
 | Share positive | 78.5% of reviews are thumbs-up |
 
+### R2. Week 1 complete (2026-10-11)
+- **Scheduled runs:** reviews ran on 2026-10-09 and 2026-10-10 with no failed or missing games (started 5–7 hours late; see D15). Player counts: 12 runs since 2026-10-08, every one with all 300 games.
+- **Database:** 914,844 reviews (847,438 backfill + 67,406 daily) for all 300 games, from 2025-10-05 to 2026-10-10, with no gap or overlap between backfill and daily; 3,600 player snapshots; 318 Parquet files loaded.
+- **Rerun check:** a second `python -m collector.load` loaded 0 files, so reloading is safe.
+- **Refresh routine:** `git pull`, then `python -m collector.load`.
+
 ## Known limitations
 
 ### L1. Games whose reviews the API doesn't return
@@ -158,3 +165,6 @@ The pool is built from most-played, top releases and US top sellers. All three l
 
 ### L4. Title/tag patch detection misses named content updates
 Large live-service games often name updates without the word "patch" or a `patchnotes` tag. Until detection improves, patch counts undercount exactly the biggest updates.
+
+### L5. Capped games have shorter history
+99 of 300 games hit the 5,000-review backfill cap, so their complete history starts after 2025-10-05; for 37 it starts only in Aug–Sep 2026. Trend and patch analyses must restrict each game to dates on or after `review_coverage.complete_from`, or a chart will show a false rise where a game's data begins.
