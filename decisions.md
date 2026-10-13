@@ -122,6 +122,13 @@ Each entry records what was decided, why, and what was rejected. Evidence for th
 - **Failures:** the same rules as `reviews.collect`. A transient failure or broken page means no file for that game and the run exits 1, so a rerun retries it. A permanent error is logged and skipped. After 5 transient failures in a row, the run stops. Each game's summary entry is saved before its parquet file, so a crash can leave an entry without a file (refetched and overwritten by the rerun), never a file without an entry.
 - **Results (2026-10-10):** 300 of 300 games, 847,438 reviews, 8,750 pages in ~3 hours, zero errors. 99 games hit the 5,000-review cap (see L5); coverage is in the `review_coverage` table.
 
+### D17. News collection with full post text
+- **Decision:** official announcements only (`feeds=steam_community_announcements`), with full post bodies (no `maxlength`). Backfill: every post from 2025-10-05, one file per game (`data/backfill/news/appid=<id>.parquet`), resumable. Daily: each run fetches the last 7 days and writes `data/news/fetched=YYYY-MM-DD.parquet`; the overlap means a late or missed run never loses a post, and the loader dedupes on `gid`.
+- **No `is_patch` column:** the patch rule (D9) is still being measured, so it's applied in SQL or a notebook, where changing it doesn't mean refetching.
+- **`gid` is stored as text:** Steam's post IDs are unsigned 64-bit numbers and can exceed Postgres `bigint`.
+- **Failure handling like players (D14), not reviews (D5):** write whatever succeeded; exit 1 only if most games failed or the breaker trips. Posts stay fetchable for days, so partial files are safe.
+- **Results (2026-10-13):** 7,381 posts from 265 games (~28 per game per year among games that post).
+
 ## Estimates (2026-10-04)
 
 ### E1. English reviews per day for a typical game
@@ -165,6 +172,8 @@ The pool is built from most-played, top releases and US top sellers. All three l
 
 ### L4. Title/tag patch detection misses named content updates
 Large live-service games often name updates without the word "patch" or a `patchnotes` tag. Until detection improves, patch counts undercount exactly the biggest updates.
+
+**35 of 300 games (11.7%) posted no official Steam announcements between 2025-10-05 and 2026-10-13.** Some are finished games that no longer update; others may announce updates elsewhere (Discord, X, their own sites). They're candidates for week 7's low-patch comparison group, but only after checking a few by hand to tell "no updates" apart from "updates announced elsewhere."
 
 ### L5. Capped games have shorter history
 99 of 300 games hit the 5,000-review backfill cap, so their complete history starts after 2025-10-05; for 37 it starts only in Aug–Sep 2026. Trend and patch analyses must restrict each game to dates on or after `review_coverage.complete_from`, or a chart will show a false rise where a game's data begins.

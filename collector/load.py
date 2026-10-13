@@ -23,7 +23,8 @@ log = logging.getLogger(__name__)
 
 SUMMARY_JSON = DATA / "backfill" / "reviews" / "_summary.json"
 # Load order: backfill before daily, so a review in both keeps source = 'backfill'.
-GLOBS = ["backfill/reviews/appid=*.parquet", "reviews/date=*.parquet", "players/hour=*.parquet"]
+GLOBS = ["backfill/reviews/appid=*.parquet", "reviews/date=*.parquet", "players/hour=*.parquet",
+         "backfill/news/appid=*.parquet", "news/fetched=*.parquet"]
 
 _SQL_TYPES = {pa.int64(): "bigint", pa.string(): "text", pa.bool_(): "boolean", pa.float64(): "double precision"}
 
@@ -45,6 +46,14 @@ INSERT INTO player_snapshots (appid, fetched_at, player_count)
 SELECT appid, to_timestamp(fetched_at), player_count FROM stage
 ON CONFLICT (appid, fetched_at) DO NOTHING
 """
+_NEWS_INSERT = """
+INSERT INTO news (gid, appid, posted_at, title, contents, url, author, feedname, tags)
+SELECT gid, appid, to_timestamp(date), title, contents, url, author, feedname, tags FROM stage
+ON CONFLICT (gid) DO NOTHING
+"""
+# Path prefix -> (insert, params). The first match wins, so the backfill prefixes come before the daily ones.
+_INSERTS = [("backfill/reviews/", _REVIEWS_INSERT, ("backfill",)), ("reviews/", _REVIEWS_INSERT, ("daily",)),
+            ("players/", _PLAYERS_INSERT, ()), ("backfill/news/", _NEWS_INSERT, ()), ("news/", _NEWS_INSERT, ())]
 
 
 def files_to_load(files: list[str], loaded: set[str]) -> list[str]:
@@ -55,6 +64,24 @@ def files_to_load(files: list[str], loaded: set[str]) -> list[str]:
 def find_files(data: Path) -> list[str]:
     """Every Parquet file to load, relative to data/ with forward slashes (as loaded_files stores them), in GLOBS order."""
     return [p.relative_to(data).as_posix() for g in GLOBS for p in sorted(data.glob(g))]
+
+
+def sql_type(t: pa.DataType) -> str:
+    """The stage column type for a Parquet type. psycopg's COPY writes Python lists as Postgres arrays, so news
+    tags stage as text[]. Lists match on their element type: Parquet names the element field "element", not
+    pa.list_'s "item", so pa.list_(pa.string()) doesn't equal the type read back from the file.
+    """
+    if pa.types.is_list(t):
+        return sql_type(t.value_type) + "[]"
+    return _SQL_TYPES[t]
+
+
+def insert_for(rel: str) -> tuple[str, tuple]:
+    """The insert statement and its params for a file, by its path prefix."""
+    for prefix, insert, params in _INSERTS:
+        if rel.startswith(prefix):
+            return insert, params
+    raise ValueError(f"no insert for {rel}")
 
 
 def load_games(conn: psycopg.Connection, path: Path) -> None:
@@ -73,10 +100,9 @@ def load_file(conn: psycopg.Connection, data: Path, rel: str) -> tuple[int, int]
     """Stage one Parquet file with COPY, insert it, and record it in loaded_files, all in one transaction."""
     table = pq.read_table(data / rel)
     cols = table.schema.names
-    insert, params = (_PLAYERS_INSERT, ()) if rel.startswith("players/") else \
-        (_REVIEWS_INSERT, ("backfill" if rel.startswith("backfill/") else "daily",))
+    insert, params = insert_for(rel)
     with conn.transaction(), conn.cursor() as cur:
-        cur.execute(f"CREATE TEMP TABLE stage ({', '.join(f'{f.name} {_SQL_TYPES[f.type]}' for f in table.schema)})"
+        cur.execute(f"CREATE TEMP TABLE stage ({', '.join(f'{f.name} {sql_type(f.type)}' for f in table.schema)})"
                     " ON COMMIT DROP")
         with cur.copy(f"COPY stage ({', '.join(cols)}) FROM STDIN") as cp:
             for row in table.to_pylist():
@@ -103,7 +129,7 @@ def main():
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
     load_dotenv()
     with psycopg.connect(os.environ["DATABASE_URL"], autocommit=True) as conn:
-        load_games(conn, GAMES_CSV)  # first: reviews, player_snapshots and review_coverage reference games
+        load_games(conn, GAMES_CSV)  # first: every other table references games
         loaded = {r[0] for r in conn.execute("SELECT path FROM loaded_files")}
         todo = files_to_load(find_files(DATA), loaded)
         log.info("%d files already loaded, %d to go", len(loaded), len(todo))

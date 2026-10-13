@@ -15,7 +15,7 @@ concurrency:
 jobs:
   collect:
     runs-on: ubuntu-latest
-    timeout-minutes: 90         # backstop if Steam is slow; normal runs take ~15 min
+    timeout-minutes: 90         # backstop if Steam is slow; normal runs take ~20 min (reviews ~15, news ~5)
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -26,6 +26,9 @@ jobs:
       - run: python -m pytest -q
       - name: Collect reviews
         run: python -m collector.reviews
+      - name: Collect news
+        if: ${{ !cancelled() }}     # a reviews failure shouldn't block news
+        run: python -m collector.news
       - name: Check data
         if: ${{ !cancelled() }}
         run: python -m checks.reviews
@@ -34,7 +37,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/reviews
+          git add data/reviews data/news
           git diff --cached --quiet && exit 0
           git commit -m "Reviews collected $(date -u +%F)"
           git pull --rebase

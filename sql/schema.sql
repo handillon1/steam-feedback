@@ -50,9 +50,22 @@ CREATE TABLE IF NOT EXISTS loaded_files (
     loaded_at      timestamptz NOT NULL DEFAULT now()
 );
 
--- Optional but useful in week 2: how far back each game's history is complete (from backfill/_summary.json).
+-- how far back each game's history is complete (from backfill/_summary.json).
 CREATE TABLE IF NOT EXISTS review_coverage (
     appid          integer PRIMARY KEY REFERENCES games (appid),
     complete_from  date,      -- first day with every review; later than 2025-10-05 for capped games
     capped         boolean NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS news (
+    gid        text        PRIMARY KEY,   -- Steam's post ID; text, not bigint (see below)
+    appid      integer     NOT NULL REFERENCES games (appid),
+    posted_at  timestamptz NOT NULL,
+    title      text        NOT NULL,
+    contents   text,
+    url        text,
+    author     text,
+    feedname   text,
+    tags       text[]      NOT NULL DEFAULT '{}'
+);
+CREATE INDEX IF NOT EXISTS news_appid_posted ON news (appid, posted_at);
