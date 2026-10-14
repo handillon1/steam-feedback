@@ -129,6 +129,17 @@ Each entry records what was decided, why, and what was rejected. Evidence for th
 - **Failure handling like players (D14), not reviews (D5):** write whatever succeeded; exit 1 only if most games failed or the breaker trips. Posts stay fetchable for days, so partial files are safe.
 - **Results (2026-10-13):** 7,381 posts from 265 games (~28 per game per year among games that post).
 
+## Metrics (2026-10-13)
+
+### D18. Very short reviews are flagged, not dropped
+- **Decision:** a review is short when it has fewer than 20 characters after trimming spaces, tabs and newlines: `reviews.is_short`, a generated column (`length(btrim(review, E' \t\r\n')) < 20`). Short reviews count in every rating metric (volume, share positive, playtime groups). Week 3's text work skips them with `WHERE NOT is_short`.
+- **Why keep them for ratings:** the thumbs-up or thumbs-down is a full rating whatever the text length. They're also a large and different slice: 27.2% of all reviews are short, and 93.5% of them are positive vs 80.7% of longer ones. Dropping them would pull share positive down by about 3–4 points and change which games look well liked.
+- **Why skip them for text:** under 20 characters there's no topic to extract. Typical examples: "great game 10/10", "best aim trainer", "Highly recommend!", "movement is so bad". The last one shows the cutoff also drops a few real complaints. That's accepted, since text work needs enough text to classify.
+- **Why 20:** under 10 characters keeps only one-word reviews (15.9% of all reviews), which leaves "great game 10/10" in the text set. Under 50 characters (45.1%) would drop short but complete sentences that name a specific problem.
+- **Generated, not computed in the loader:** it can't drift from `review`, and changing the rule needs no reload.
+- **Changing it on a database that already holds data:** `CREATE TABLE IF NOT EXISTS` does nothing to an existing table, so the column is added by a separate `ALTER TABLE ... ADD COLUMN IF NOT EXISTS` in `schema.sql`, which fills all existing rows. A later rule change needs `ALTER COLUMN is_short SET EXPRESSION` (Postgres 17+), since `ADD COLUMN IF NOT EXISTS` skips a column that's already there. That's how the trim was fixed on 2026-10-13: plain `btrim(review)` trims only spaces, and many reviews end in newlines. The fix flagged 1,123 more reviews as short (251,231 → 252,354).
+- **Other metric decisions** (UTC half-open periods, `complete_from` coverage for every metric, a 30-review minimum for any share, per-day over covered days) are in `metrics.md`.
+
 ## Estimates (2026-10-04)
 
 ### E1. English reviews per day for a typical game
@@ -168,7 +179,7 @@ With `purchase_type=1`, only Deadlock (1422450) in the top 100 returned nothing;
 Findings describe English-speaking reviewers. CS2 has 1.5M English reviews out of 5.3M total.
 
 ### L3. Candidate pool comes from charts
-The pool is built from most-played, top releases and US top sellers. All three lean toward games that are popular right now, so steady mid-size games that aren't trending, and free games with little revenue, are underrepresented. Top sellers ranks by current revenue, so the pool also favors paid games and games that were on discount on the snapshot day (2026-10-05).
+The pool is built from most-played, top releases and US top sellers. All three lean toward games that are popular right now, so steady mid-size games that aren't trending, and free games with little revenue, are underrepresented. Top sellers ranks by current revenue, so the pool also favors paid games. The snapshot (2026-10-05) was taken in the middle of the Steam Autumn Sale 2026 (Oct 1–8, `steam_sales`), so the pool leans toward games discounted that week, more strongly than an ordinary day's discounts would.
 
 ### L4. Title/tag patch detection misses named content updates
 Large live-service games often name updates without the word "patch" or a `patchnotes` tag. Until detection improves, patch counts undercount exactly the biggest updates.
@@ -177,3 +188,5 @@ Large live-service games often name updates without the word "patch" or a `patch
 
 ### L5. Capped games have shorter history
 99 of 300 games hit the 5,000-review backfill cap, so their complete history starts after 2025-10-05; for 37 it starts only in Aug–Sep 2026. Trend and patch analyses must restrict each game to dates on or after `review_coverage.complete_from`, or a chart will show a false rise where a game's data begins.
+
+“Coverage filter verified 2026-10-13: removes 10,792 reviews (~1%), all from the 99 capped games’ partial first day.”

@@ -34,6 +34,14 @@ CREATE TABLE IF NOT EXISTS reviews (
     source                    text        NOT NULL CHECK (source IN ('backfill', 'daily'))
 );
 CREATE INDEX IF NOT EXISTS reviews_appid_created ON reviews (appid, created_at);
+-- Under 20 characters after trimming ("good", "10/10"): kept for rating metrics, skipped by text work (D18).
+-- Generated, so it can't drift from review; ALTER, not in CREATE TABLE, so rerunning adds it to an existing table.
+-- Trims tabs and newlines too: plain btrim() only trims spaces, and many reviews end in newlines.
+ALTER TABLE reviews ADD COLUMN IF NOT EXISTS is_short boolean
+    GENERATED ALWAYS AS (length(btrim(review, E' \t\r\n')) < 20) STORED;
+-- ADD COLUMN IF NOT EXISTS won't change an existing column. Databases built before 2026-10-13 got the old
+-- spaces-only version; it was changed once with (rewrites the table, ~10 s):
+--   ALTER TABLE reviews ALTER COLUMN is_short SET EXPRESSION AS (length(btrim(review, E' \t\r\n')) < 20);
 
 CREATE TABLE IF NOT EXISTS player_snapshots (
     appid         integer     NOT NULL REFERENCES games (appid),
