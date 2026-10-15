@@ -77,3 +77,16 @@ CREATE TABLE IF NOT EXISTS news (
     tags       text[]      NOT NULL DEFAULT '{}'
 );
 CREATE INDEX IF NOT EXISTS news_appid_posted ON news (appid, posted_at);
+-- One row per game per daily price snapshot (D8, D19). Prices are US cents. status says which response it was:
+-- priced; free (0 cents, is_free); no_price (not free, no single price: NULL, not 0); not_found (success: false).
+CREATE TABLE IF NOT EXISTS price_snapshots (
+    appid             integer     NOT NULL REFERENCES games (appid),
+    snapshot_date     date        NOT NULL,   -- the run's UTC day, from the file name
+    fetched_at        timestamptz NOT NULL,   -- ~3 a.m. Pacific or later: before that day's 10 a.m. sale starts (D19)
+    status            text        NOT NULL CHECK (status IN ('priced', 'free', 'no_price', 'not_found')),
+    is_free           boolean,
+    initial_cents     integer,
+    final_cents       integer,
+    discount_percent  integer,
+    PRIMARY KEY (appid, snapshot_date)
+);

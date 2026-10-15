@@ -24,7 +24,7 @@ log = logging.getLogger(__name__)
 SUMMARY_JSON = DATA / "backfill" / "reviews" / "_summary.json"
 # Load order: backfill before daily, so a review in both keeps source = 'backfill'.
 GLOBS = ["backfill/reviews/appid=*.parquet", "reviews/date=*.parquet", "players/hour=*.parquet",
-         "backfill/news/appid=*.parquet", "news/fetched=*.parquet"]
+         "backfill/news/appid=*.parquet", "news/fetched=*.parquet", "prices/date=*.parquet"]
 
 _SQL_TYPES = {pa.int64(): "bigint", pa.string(): "text", pa.bool_(): "boolean", pa.float64(): "double precision"}
 
@@ -51,9 +51,18 @@ INSERT INTO news (gid, appid, posted_at, title, contents, url, author, feedname,
 SELECT gid, appid, to_timestamp(date), title, contents, url, author, feedname, tags FROM stage
 ON CONFLICT (gid) DO NOTHING
 """
+_PRICES_INSERT = """
+INSERT INTO price_snapshots (appid, snapshot_date, fetched_at, status, is_free, initial_cents, final_cents,
+                             discount_percent)
+SELECT appid, snapshot_date::date, to_timestamp(fetched_at), status, is_free, initial_cents, final_cents,
+       discount_percent
+FROM stage
+ON CONFLICT (appid, snapshot_date) DO NOTHING
+"""
 # Path prefix -> (insert, params). The first match wins, so the backfill prefixes come before the daily ones.
 _INSERTS = [("backfill/reviews/", _REVIEWS_INSERT, ("backfill",)), ("reviews/", _REVIEWS_INSERT, ("daily",)),
-            ("players/", _PLAYERS_INSERT, ()), ("backfill/news/", _NEWS_INSERT, ()), ("news/", _NEWS_INSERT, ())]
+            ("players/", _PLAYERS_INSERT, ()), ("backfill/news/", _NEWS_INSERT, ()), ("news/", _NEWS_INSERT, ()),
+            ("prices/", _PRICES_INSERT, ())]
 
 
 def files_to_load(files: list[str], loaded: set[str]) -> list[str]:

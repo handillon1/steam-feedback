@@ -69,6 +69,7 @@ Each entry records what was decided, why, and what was rejected. Evidence for th
 ### D8. Prices
 - **Decision:** `cc=us` everywhere, because prices differ by region. Daily prices use appdetails with many appids plus `filters=price_overview`, so 300 games take a handful of calls.
 - **Free games:** in that mode they come back as `data: []`. Recorded as 0 cents with `is_free = true`, so "free" can't be confused with "price missing because the call failed".
+- **But `data: []` isn't always free** (2026-10-15): see D19.
 
 ### D9. Patch detection
 - **Decision:** official posts only (`feeds=steam_community_announcements`). A post is a patch if `"patchnotes" in tags`, OR the title contains patch/update/hotfix/bugfix, OR the title has a version number like 1.4.5.7.
@@ -128,6 +129,24 @@ Each entry records what was decided, why, and what was rejected. Evidence for th
 - **`gid` is stored as text:** Steam's post IDs are unsigned 64-bit numbers and can exceed Postgres `bigint`.
 - **Failure handling like players (D14), not reviews (D5):** write whatever succeeded; exit 1 only if most games failed or the breaker trips. Posts stay fetchable for days, so partial files are safe.
 - **Results (2026-10-13):** 7,381 posts from 265 games (~28 per game per year among games that post).
+
+### D19. Daily price snapshots (2026-10-15)
+- **Call:** `store.steampowered.com/api/appdetails?appids=1,2,3,...&cc=us&filters=price_overview`, 100 appids per call, so 3 calls for 300 games. Batching only works with `filters=price_overview`. Checked 2026-10-15: all 100 appids came back in each of the 3 batches. An appid missing from a response means the batch is too big; it counts as failed.
+- **Four outcomes,** stored in `status`:
+
+  | Response | `status` | Prices | `is_free` |
+  | --- | --- | --- | --- |
+  | `price_overview` | `priced` | `initial`, `final`, `discount_percent` (already cents) | false |
+  | `data: []`, and `is_free` | `free` | 0 (D8) | true |
+  | `data: []`, not `is_free` | `no_price` | NULL | false |
+  | `success: false` | `not_found` | NULL, not 0 | NULL |
+
+- **Why `no_price` exists:** cross-checking the 23 `data: []` games against appdetails, 22 are free-to-play. Call of Duty (1938090) is not free: it's the series hub, sold only as 10 edition packages, so it has no single price. Calling it free would be wrong, so each `data: []` game gets one full appdetails call (no filter) per run to read `is_free`, ~23 extra calls. A static list would go stale if a game changes.
+- **Currency:** every price must be USD. Anything else means `cc=us` silently failed, so the run raises and writes nothing rather than mix currencies.
+- **Storage:** like the other collectors. One file per UTC day, `data/prices/date=YYYY-MM-DD.parquet`, skipped if it exists, written atomically, with `fetched_at` per row. Run summary in `data/prices/_runs/` with counts per status and the `not_found`, `no_price` and failed appids. Loaded into `price_snapshots` (primary key `appid, snapshot_date`); `fact_prices` gives dollars and `is_discounted`.
+- **Failures:** like players (D14). Today's price can't be fetched later, so whatever succeeded is written. Unlike players, any failed game makes the run exit 1: with only 3 calls, one failure is a whole batch. The step runs even if reviews or news failed.
+- **Timing:** the job is scheduled for 10:17 UTC (3:17 a.m. Pacific) and often starts a few hours late. Steam sales start at 10 a.m. Pacific, so a sale's first day appears only in the next day's snapshot, and its last day still shows the discount. Fine for week 7, which works in days around a patch, but a price-based sale flag is shifted by a day from `steam_sales`.
+- **First run:** 277 priced (53 discounted), 22 free, 1 no_price, 0 not_found (test run 2026-10-15, not kept; the first kept file comes from the Action).
 
 ## Metrics (2026-10-13)
 

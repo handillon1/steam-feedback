@@ -97,6 +97,39 @@ def parse_search_results(page: dict) -> tuple[list[int], int]:
     return appids, skipped
 
 
+class WrongCurrency(Exception):
+    """A price came back in something other than USD: cc=us failed, so the run stops rather than mix currencies."""
+
+
+def parse_price_batch(body: dict, appids: list[int]) -> dict[int, dict]:
+    """Per appid, from one batched appdetails call with filters=price_overview (D8, D19).
+
+    - price_overview: {"status": "priced", "initial_cents", "final_cents", "discount_percent"} (already cents)
+    - success: true, data: []: {"status": "unlisted"}. Free games look like this, but so does a paid game with no
+      single price, so the caller checks is_free before calling it free.
+    - success: false: {"status": "not_found"}
+
+    Appids missing from the response are left out; the caller counts them as failed (the batch was too big).
+    Raises WrongCurrency on any non-USD price.
+    """
+    out = {}
+    for appid in appids:
+        entry = body.get(str(appid))
+        if entry is None:
+            continue
+        if not entry.get("success"):
+            out[appid] = {"status": "not_found"}
+        elif not entry.get("data"):
+            out[appid] = {"status": "unlisted"}
+        else:
+            p = entry["data"]["price_overview"]
+            if p["currency"] != "USD":
+                raise WrongCurrency(f"app {appid}: price in {p['currency']}, not USD: cc=us failed")
+            out[appid] = {"status": "priced", "initial_cents": p["initial"], "final_cents": p["final"],
+                          "discount_percent": p["discount_percent"]}
+    return out
+
+
 def parse_player_count(body: dict) -> int | None:
     """Current players from GetNumberOfCurrentPlayers, or None when Steam doesn't know the app (result != 1)."""
     response = body["response"]

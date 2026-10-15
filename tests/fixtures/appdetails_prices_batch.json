@@ -1,0 +1,26 @@
+{
+  "205100": {
+    "success": true,
+    "data": {
+      "price_overview": {
+        "currency": "USD",
+        "initial": 999,
+        "final": 249,
+        "discount_percent": 75,
+        "initial_formatted": "$9.99",
+        "final_formatted": "$2.49"
+      }
+    }
+  },
+  "730": {
+    "success": true,
+    "data": []
+  },
+  "1938090": {
+    "success": true,
+    "data": []
+  },
+  "99999999": {
+    "success": false
+  }
+}

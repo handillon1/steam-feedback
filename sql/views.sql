@@ -49,3 +49,17 @@ SELECT appid,
        (fetched_at AT TIME ZONE 'UTC')::date     AS snapshot_date,
        player_count
 FROM player_snapshots;
+
+-- One row per game per daily price snapshot (D19), in dollars. Prices are NULL, not 0, for no_price and not_found;
+-- 0 only for free games. A sale's first day shows up in the next day's snapshot (runs before 10 a.m. Pacific).
+CREATE OR REPLACE VIEW fact_prices AS
+SELECT appid,
+       snapshot_date,
+       fetched_at,
+       status,
+       is_free,
+       initial_cents / 100.0                     AS initial_usd,
+       final_cents / 100.0                       AS final_usd,
+       discount_percent,
+       discount_percent > 0                      AS is_discounted   -- NULL when there's no price
+FROM price_snapshots;

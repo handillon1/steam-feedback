@@ -1,0 +1,27 @@
+{
+  "1938090": {
+    "success": true,
+    "data": {
+      "type": "game",
+      "name": "Call of Duty\u00ae",
+      "steam_appid": 1938090,
+      "is_free": false,
+      "packages": [
+        777136,
+        777139,
+        777142,
+        777145,
+        777148,
+        777151,
+        777154,
+        1430343,
+        1641553,
+        1641550
+      ],
+      "release_date": {
+        "coming_soon": false,
+        "date": "Oct 27, 2022"
+      }
+    }
+  }
+}
