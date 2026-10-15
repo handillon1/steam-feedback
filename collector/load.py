@@ -128,7 +128,7 @@ def load_coverage(conn: psycopg.Connection, path: Path) -> None:
 def main():
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
     load_dotenv()
-    with psycopg.connect(os.environ["DATABASE_URL"], autocommit=True) as conn:
+    with psycopg.connect(os.environ["DATABASE_URL"], autocommit=True, connect_timeout=10) as conn:
         load_games(conn, GAMES_CSV)  # first: every other table references games
         loaded = {r[0] for r in conn.execute("SELECT path FROM loaded_files")}
         todo = files_to_load(find_files(DATA), loaded)

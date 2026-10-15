@@ -24,6 +24,7 @@ LEFT JOIN (SELECT appid, count(*) AS news_posts FROM news GROUP BY appid) n USIN
 
 -- One row per review from each game's complete_from on (L5). No review text: Power BI doesn't need it.
 -- Playtime groups match prediction 1 in metrics.md; NULL when no playtime was recorded.
+-- review_chars is the text length only, for Finding 3 (are longer reviews more negative?).
 CREATE OR REPLACE VIEW fact_reviews AS
 SELECT r.recommendationid,
        r.appid,
@@ -35,7 +36,8 @@ SELECT r.recommendationid,
             WHEN r.playtime_at_review_min IS NOT NULL THEN '2-50h'
        END                                       AS playtime_group,
        r.is_short,
-       r.source
+       r.source,
+       length(btrim(r.review, E' \t\r\n'))       AS review_chars  -- same trim as is_short, so is_short = review_chars < 20
 FROM reviews r
 JOIN review_coverage c USING (appid)
 WHERE r.created_at >= c.complete_from::timestamp AT TIME ZONE 'UTC';

@@ -170,6 +170,44 @@ Each entry records what was decided, why, and what was rejected. Evidence for th
 - **Rerun check:** a second `python -m collector.load` loaded 0 files, so reloading is safe.
 - **Refresh routine:** `git pull`, then `python -m collector.load`.
 
+## Findings (2026-10-14)
+
+All three use the full year, 2025-10-05 through 2026-10-13, and compare each game with itself (within-game), keeping only games with 30+ reviews on each side. Intervals are 95%, from resampling games. Code and charts are in `notebooks/02_eda.ipynb`; charts are also saved in `figures/`.
+
+### F1. Long-playtime reviewers are far more positive
+- **Prediction:** players who review after about 2 hours are significantly less positive than those after 50+ hours. **Holds.**
+- **Result:** reviews after 50+ hours are **36.5 points more positive** than reviews after 2 hours or less (CI 34.2 to 38.7), in **230 of 231 games**. Counter-Strike 2 is the only exception.
+- **Pooled is smaller:** 53.6% vs 83.8% positive, a 30.1-point gap. The gap shrinks as games get busier (39.3 points in the 1–10/day group, 35.1 in 10–100, 28.8 in 100+), and busy games supply most 50+ hour reviews.
+- **Caveat:** 231 of 300 games qualify, which leaves out most 1–10/day games (see `metrics.md`, prediction 1).
+
+![Share positive after 50+ hours vs after 2 hours or less, one dot per game](figures/finding1_playtime.png)
+
+### F2. Sales don't change positivity, but bring more reviews
+- **Prediction:** reviews during sale weeks are no more or less positive (test: mean and CI within ±2 points). **Holds.**
+- **Main version** (each game's first 30 days dropped, Autumn Sale 2026 left out, 212 games):
+  - Share positive: **+0.2 points** on sale days (CI −0.5 to +0.9). All four versions agree.
+  - Reviews at 2 hours or less: +1.1 points of sale-day reviews (CI 0.7 to 1.5), so sales bring in somewhat newer players.
+  - Volume: **1.28×** as many reviews per day (CI 1.23 to 1.32).
+- **By sale:** only Spring 2026 shows a positivity change, and it's small (+1.2 points, CI 0.3 to 2.1). Winter 2025 has the biggest volume jump (1.40×) but overlaps the holidays. 4 sales tested separately, so about a 1-in-5 chance one shows a change by luck. Treat Spring 2026 as noise unless it repeats.
+- **Caveats:**
+  - Reviews lag purchases, so the volume ratio is a lower bound.
+  - Sale days are whole UTC days, but sales start at 10 a.m. Pacific.
+  - Single-game discounts count as "other" days.
+  - Autumn 2026 volume is unreliable because the games were selected mid-sale (L3).
+
+![Sale minus other days: share positive and reviews per day, overall and per sale](figures/finding2_sales.png)
+
+### F3. Longer reviews are more negative
+- **Prediction:** none recorded before the results were seen.
+- **Result:** share positive falls with length: **94% (under 20 characters), 86% (20–199), 75% (200–999), 69% (1,000+)**, within-game, 272 games. Pooled numbers nearly match, so busy games don't drive it.
+  - 200–999 vs 20–199: −10.9 points (CI −11.8 to −10.0), lower in 271 of 272 games.
+  - 1,000+ vs 20–199: −17.0 points (CI −18.3 to −15.8), lower in 265 of 272 games.
+- **Length measure:** `fact_reviews.review_chars`, trimmed the same way as `is_short`, so the under-20 bucket is exactly the short reviews (D18).
+- **Consequence for week 3:** the text work skips the most positive slice (27% of reviews, 94% positive), and the reviews with the most text lean most negative. Text-based topic shares over-represent complaints; report them as "among reviews with text", not "among players".
+Record the length mix of the week 3 labeling sample.
+
+![Share positive by review length, pooled and within-game](figures/finding3_length.png)
+
 ## Known limitations
 
 ### L1. Games whose reviews the API doesn't return
