@@ -179,6 +179,7 @@ All three use the full year, 2025-10-05 through 2026-10-13, and compare each gam
 - **Result:** reviews after 50+ hours are **36.5 points more positive** than reviews after 2 hours or less (CI 34.2 to 38.7), in **230 of 231 games**. Counter-Strike 2 is the only exception.
 - **Pooled is smaller:** 53.6% vs 83.8% positive, a 30.1-point gap. The gap shrinks as games get busier (39.3 points in the 1–10/day group, 35.1 in 10–100, 28.8 in 100+), and busy games supply most 50+ hour reviews.
 - **Caveat:** 231 of 300 games qualify, which leaves out most 1–10/day games (see `metrics.md`, prediction 1).
+- **Refunds (2026-10-15):** 6.6% of reviews at 2 hours or less (7.8% within game, 95% interval 7.1–8.5). Refunders are 27% positive. Without them the gap is 34.9 points (32.5–37.3), so refunds explain little of it. What's left is selection (players who dislike a game stop and review early) or a worse early experience; the data can't separate them, so this stays an association. The 3,605 refunded reviews are a ready-made sample if anyone asks what refunders complain about. Chart: `figures/finding4_refunds.png`.
 
 ![Share positive after 50+ hours vs after 2 hours or less, one dot per game](figures/finding1_playtime.png)
 
@@ -205,6 +206,7 @@ All three use the full year, 2025-10-05 through 2026-10-13, and compare each gam
 - **Length measure:** `fact_reviews.review_chars`, trimmed the same way as `is_short`, so the under-20 bucket is exactly the short reviews (D18).
 - **Consequence for week 3:** the text work skips the most positive slice (27% of reviews, 94% positive), and the reviews with the most text lean most negative. Text-based topic shares over-represent complaints; report them as "among reviews with text", not "among players".
 Record the length mix of the week 3 labeling sample.
+- **Within playtime groups (2026-10-15):** holds within each playtime group (1,000+ vs 20–199: 2–50h −20.1, 50h+ −18.0; 2h or less −10.0 from only 16 games), so playtime doesn't explain it. The 2h-or-less row is also a different set of games: 7 of its 16 are 100+/day games, vs 39 of 300 overall. Chart: `figures/finding5_length_by_playtime.png`.
 
 ![Share positive by review length, pooled and within-game](figures/finding3_length.png)
 
@@ -228,3 +230,24 @@ Large live-service games often name updates without the word "patch" or a `patch
 99 of 300 games hit the 5,000-review backfill cap, so their complete history starts after 2025-10-05; for 37 it starts only in Aug–Sep 2026. Trend and patch analyses must restrict each game to dates on or after `review_coverage.complete_from`, or a chart will show a false rise where a game's data begins.
 
 “Coverage filter verified 2026-10-13: removes 10,792 reviews (~1%), all from the 99 capped games’ partial first day.”
+
+### L6. Store release date is the 1.0 release, not first availability
+**43 of 300 games were in Early Access during the window** (any covered review with `written_during_early_access`, through 2026-10-14):
+- **9 left Early Access in the window:** Timberborn, Space Haven, Go-Go Town!, Scrap Mechanic, Quasimorph, Big Ambitions, TCG Card Shop Simulator, RuneScape: Dragonwilds and Stick It to the Stickman. For each, the last Early Access review falls on the appdetails release date, so that date is the 1.0 release. A handful of reviews written before then are flagged non-EA, and each was edited after 1.0, so the flag reflects the review's latest version.
+- **34 are still in Early Access.** For them the release date is the Early Access start, and appdetails lists "Early Access" among their genres. The 9 that left have lost that genre, so the store can't identify them; only the review flag can.
+
+Why it matters:
+- **Week 7:** leaving Early Access is probably the biggest single update a game ships, and Early Access reviewers may judge a game differently. The 9 are natural before/after cases; the switch has to be modeled, not mistaken for an ordinary patch.
+- **Selection rules:** "released after X" doesn't mean "no reviews before X" (C1).
+- **Trend metric:** 3 of the first 21 negative-trend flags (Stick It to the Stickman, RuneScape: Dragonwilds, TCG Card Shop Simulator) left Early Access between Sep 14 and Sep 23, at the boundary of the recent window.
+
+## Checks (2026-10-15)
+
+### C1. Collected counts vs Steam's own counts
+- **Games:** the 59 "full-history" games: not capped (D16) and released on or after 2025-10-05 (appdetails `release_date`), so every review Steam has for them should be in the database.
+- **Prediction (written before fetching):** 5 of 59 (~8%) are more than 2% off. Expected causes: Early Access reviews from before the release date (ours far too low), and reviews deleted after collection (ours slightly too high).
+- **Result:** **6 of 59** are more than 2% off, all far below Steam (−45% to −92%): Scrap Mechanic, Space Haven, Big Ambitions, Go-Go Town!, Quasimorph, Stick It to the Stickman. Each has reviews on the window's first day, so each had Early Access reviews before 2025-10-05 that the store's (full) release date hides. They aren't full-history games; the selection rule was wrong for them, not the collection.
+- **The other 53:** 29 match exactly, the largest gap is 1.1% (1 review on a 92-review game), and the total is 105,849 ours vs 105,808 Steam (+0.04%). Deleted reviews don't matter at this scale.
+- **Diagnosis confirmed** with `written_during_early_access`: each of the 6 has Early Access reviews from its first day in the data (2025-10-05, or 10-06 for Go-Go Town!) until its release date, 127 to 2,552 per game. See L6.
+- **Prediction:** the count was close (5 vs 6) and the main cause was right. Deleted reviews were expected to push a few games over 2%; none did.
+- **Consequence:** a release date on or after the window start doesn't mean full history. Use "first review after 2025-10-06" as well. Data: `data/checks/steam_counts_2026-10-15.csv` (`python -m checks.steam_counts`); chart: `figures/check1_steam_counts.png`.
