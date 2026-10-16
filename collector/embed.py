@@ -90,6 +90,7 @@ def embed_new(rows: Iterable[tuple[int, str]], done: set[int], encode: Callable[
     """
     check_meta(emb_dir, meta)
     ids, texts, total, started = [], [], 0, time.monotonic()
+    scanned = skipped = 0
 
     def flush():
         nonlocal total
@@ -100,7 +101,11 @@ def embed_new(rows: Iterable[tuple[int, str]], done: set[int], encode: Callable[
         texts.clear()
 
     for rid, review in rows:
+        scanned += 1
+        if scanned % 100_000 == 0:
+            log.info("scanned %d reviews: %d already embedded, %d new so far", scanned, skipped, total + len(ids))
         if rid in done:
+            skipped += 1
             continue
         ids.append(rid)
         texts.append(clean_for_embedding(review))
@@ -108,6 +113,7 @@ def embed_new(rows: Iterable[tuple[int, str]], done: set[int], encode: Callable[
             flush()
     if ids:
         flush()
+    log.info("scanned %d reviews: %d already embedded, %d new", scanned, skipped, total)
     return total
 
 
@@ -121,12 +127,14 @@ def stream_reviews(conn: psycopg.Connection) -> Iterator[tuple[int, str]]:
 
 def main():
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
+    logging.getLogger("httpx").setLevel(logging.WARNING)   # model loading logs every Hugging Face request
     from sentence_transformers import SentenceTransformer   # here, not at the top: keeps torch out of CI
 
     model = SentenceTransformer(MODEL, device="cpu")
     meta = {"model": MODEL, "max_seq_length": model.max_seq_length, "normalize": True}
     done = done_ids(EMB_DIR)
-    log.info("%d reviews already embedded", len(done))
+    log.info("%d reviews already embedded; streaming non-short reviews to find new ones "
+             "(a few minutes with no output when nothing is new)", len(done))
 
     def encode(texts):
         return model.encode(texts, batch_size=64, normalize_embeddings=True, convert_to_numpy=True,
