@@ -35,6 +35,9 @@ jobs:
       - name: Check data
         if: ${{ !cancelled() }}
         run: python -m checks.reviews
+      - name: Check prices
+        if: ${{ !cancelled() }}
+        run: python -m checks.prices
       - name: Commit data
         if: ${{ !cancelled() }}
         run: |

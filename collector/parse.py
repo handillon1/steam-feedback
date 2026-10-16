@@ -105,8 +105,9 @@ def parse_price_batch(body: dict, appids: list[int]) -> dict[int, dict]:
     """Per appid, from one batched appdetails call with filters=price_overview (D8, D19).
 
     - price_overview: {"status": "priced", "initial_cents", "final_cents", "discount_percent"} (already cents)
-    - success: true, data: []: {"status": "unlisted"}. Free games look like this, but so does a paid game with no
-      single price, so the caller checks is_free before calling it free.
+    - success: true, data: [] (or any data without price_overview, e.g. {}): {"status": "unlisted"}. Free games
+      look like this, but so does a paid game with no single price, so the caller checks is_free before calling it
+      free. Never a KeyError: one odd shape mustn't stop the run and lose the day.
     - success: false: {"status": "not_found"}
 
     Appids missing from the response are left out; the caller counts them as failed (the batch was too big).
@@ -117,12 +118,13 @@ def parse_price_batch(body: dict, appids: list[int]) -> dict[int, dict]:
         entry = body.get(str(appid))
         if entry is None:
             continue
+        data = entry.get("data")
+        p = data.get("price_overview") if isinstance(data, dict) else None  # [] is a list, not a dict
         if not entry.get("success"):
             out[appid] = {"status": "not_found"}
-        elif not entry.get("data"):
+        elif not p:
             out[appid] = {"status": "unlisted"}
         else:
-            p = entry["data"]["price_overview"]
             if p["currency"] != "USD":
                 raise WrongCurrency(f"app {appid}: price in {p['currency']}, not USD: cc=us failed")
             out[appid] = {"status": "priced", "initial_cents": p["initial"], "final_cents": p["final"],

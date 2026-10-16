@@ -27,6 +27,19 @@ def test_parse_price_batch_shapes():
     assert parsed[99999999] == {"status": "not_found"}
 
 
+def test_data_without_price_overview_is_unlisted_not_a_crash():
+    body = {"1": {"success": True, "data": {}}, "2": {"success": True, "data": {"other": 1}}}
+    assert parse_price_batch(body, [1, 2]) == {1: {"status": "unlisted"}, 2: {"status": "unlisted"}}
+
+
+def test_data_without_price_overview_gets_the_is_free_check(run):
+    body = load("appdetails_prices_batch.json")
+    body["730"]["data"] = {}
+    code, rows, _, _ = run(body)
+    assert code == 0
+    assert rows.loc[730].status == "free"
+
+
 def test_parse_price_batch_leaves_out_missing_appids():
     assert 4242 not in parse_price_batch(load("appdetails_prices_batch.json"), GAMES + [4242])
 
