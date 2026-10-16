@@ -154,6 +154,26 @@ Each entry records what was decided, why, and what was rejected. Evidence for th
 - **Data check** (`checks/prices.py`, after the reviews check): fails on final above initial, a discount outside 0–100 or more than 1 point off `round(100 × (1 − final/initial))`, a priced row missing a price or at 0 cents, a free row with a nonzero price, a price on a no_price/not_found row, duplicate appids, more than 5 games without a row (~295 of 300), or more than 5 not_found. Today's real snapshot passes; the discount rule matched all 277 priced rows exactly.
 - **First run:** 277 priced (53 discounted), 22 free, 1 no_price, 0 not_found (test run 2026-10-15, not kept; the first kept file comes from the Action).
 
+### D20. Review embeddings (2026-10-15)
+- **Model:** `sentence-transformers/all-MiniLM-L6-v2`, the standard baseline: fast on a CPU, 384 dimensions, good enough for clustering and retrieval. `normalize_embeddings=True`, so every vector has length 1, cosine similarity is a plain dot product, and pgvector's cosine distance works later.
+- **Which reviews:** every review with `NOT is_short` (D18), from `reviews`: 701,330 on 2026-10-15. Coverage, dates and the rest are filtered at analysis time, not here, so one set of vectors serves every analysis.
+- **BBCode is stripped before embedding:** `clean_for_embedding` removes Steam's tags (`[h1]`, `[b]`, `[spoiler]`, `[url=...]`, `[list]`/`[*]`, ...) and keeps the text inside them. Tags cost tokens and add noise. The tags are matched by name, so bracketed text that isn't a tag (`[10/10]`, `[x]`) stays. 9,483 non-short reviews (1.4%) contain tags. The database keeps the original text; only the model sees the cleaned version.
+- **Truncation:** the model reads at most 256 tokens and silently ignores the rest, so the longest reviews are embedded from their opening only.
+  - **Prediction (written before querying):** about 8% of non-short reviews are over 1,000 characters. Not blind: the week 2 length-by-playtime table showed the 1,000+ bucket at 4.6–6.7% of all reviews, and ~73% of reviews are non-short.
+  - **Result:** **7.8%** (54,468 of 701,330). Counting real tokens on a random sample of 20,000 (cleaned text, with special tokens): **6.6% exceed 256 tokens**, and almost all of them are over 1,000 characters too. At ~4.2 characters per token, the real cutoff is closer to 1,080 characters. The median over-limit review has 406 tokens, so the model sees about its first 60%.
+  - **It hits the most negative slice (F3):** reviews over 1,000 characters are 66% positive, vs 82% for the other non-short reviews.
+  - **Accepted for clustering:** a review's opening usually states its main complaint. Week 5's RAG splits long reviews into chunks, which is the proper fix.
+- **Never mix two models' vectors:** vectors from different models or settings live in different spaces, and comparing them gives meaningless results with no error. `data/embeddings/_meta.json` records model, `max_seq_length` and `normalize`. A run whose settings differ raises before writing anything.
+- **Resuming by ID, not chunk number:** new reviews arrive daily, so a list position would stop meaning anything. Each run:
+  1. reads only `recommendationid` from the existing part files;
+  2. streams non-short reviews with a server-side cursor, 10,000 at a time, so it never holds all the texts;
+  3. skips the IDs already done and embeds the rest, 10,000 per `part-<first id>.parquet`, written atomically.
+
+  An interrupted run continues, a rerun after new reviews embeds only those, and a rerun with nothing new does nothing. A part file's first ID can't collide with an existing part, because every existing part's first ID is already done.
+- **Storage:** `recommendationid` int64 and `embedding` as 384 float32 values (`fixed_size_list`). float32 rather than float64 halves the size, to about 1.1 GB. `data/embeddings/` is gitignored: too big for the repo, and rebuildable from the database.
+- **Kept out of CI:** `sentence_transformers` (torch, gigabytes) is imported inside `main()` only and listed in `requirements-dev.txt`. Tests pass `embed_new` a fake `encode` that returns random unit vectors, so they run in seconds without the 90 MB model.
+- **Cost:** 37 reviews a second on the laptop CPU (smoke run of 3,000), so the first full run takes **about 5 hours**. Daily top-ups are ~2,000 reviews, about a minute.
+
 ## Metrics (2026-10-13)
 
 ### D18. Very short reviews are flagged, not dropped

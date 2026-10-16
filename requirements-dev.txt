@@ -1,4 +1,5 @@
-# Laptop only: notebooks. Not installed by the workflows.
+# Laptop only: notebooks and embeddings (D20; torch is gigabytes). Not installed by the workflows.
 -r requirements.txt
 ipykernel==7.4.0
 matplotlib==3.7.1
+sentence-transformers==6.1.0

@@ -5,3 +5,4 @@ __pycache__/
 data/backfill/
 data/selection_raw/
 .pytest_cache/
+data/embeddings/
