@@ -173,6 +173,28 @@ Each entry records what was decided, why, and what was rejected. Evidence for th
 - **Storage:** `recommendationid` int64 and `embedding` as 384 float32 values (`fixed_size_list`). float32 rather than float64 halves the size, to about 1.1 GB. `data/embeddings/` is gitignored: too big for the repo, and rebuildable from the database.
 - **Kept out of CI:** `sentence_transformers` (torch, gigabytes) is imported inside `main()` only and listed in `requirements-dev.txt`. Tests pass `embed_new` a fake `encode` that returns random unit vectors, so they run in seconds without the 90 MB model.
 - **Cost:** 37 reviews a second on the laptop CPU (smoke run of 3,000), so the first full run takes **about 5 hours**. Daily top-ups are ~2,000 reviews, about a minute.
+Don’t run the loader during an embedding run.
+
+### D21. Measuring the patch rule (2026-10-16)
+- **The rule lives in views, not a table:** `news_patch_flags` (one row per post, one column per rule: `rule_tag`, `rule_keyword`, `rule_version`) and `patch_events` (posts any rule flags), in `sql/patch_events.sql`. The rule will change in week 3; a view always reflects the current one, with no rebuild.
+- **SQL and Python must agree:** the rule exists twice, as `is_patch` (`collector/parse.py`) and as the views. `notebooks/04_patch_events.ipynb` checks them against each other: they agree on all 7,482 posts. Postgres regexes use `\y` for a word boundary (`\b` is backspace there), and `rule_version` uses `~*` because Python compiles the whole pattern with `re.I`.
+- **Official posts only:** all 7,482 posts are `steam_community_announcements`, so the title rule (D9) isn't seeing press articles.
+- **Flagged:** 3,026 of 7,482 posts (40%). By rule, overlapping: tag 1,757, keyword 2,550, version 1,251.
+- **Hand-check sample:** four groups, each defined by the first rule that fires, so every post is in exactly one and dropping a rule shows exactly what is lost:
+
+  | Group | Posts | Measures |
+  | --- | --- | --- |
+  | `tag` | 1,757 | the tag rule's precision |
+  | `keyword_no_tag` | 1,163 | the precision of what the keyword rule adds |
+  | `version_only` | 106 | the precision of what the version rule adds |
+  | `none` | 4,456 | the misses |
+
+  10 posts per group, at most one per game (so one prolific developer can't fill a group), ordered by `md5(gid)`, so the sample is the same on every run. Labeled blind: `data/labels/patch_posts_to_label.csv` is shuffled and has no group; the key is `data/labels/patch_sample_key.csv`. Overall precision weights each group by its size, not a plain average of four equal samples.
+- **`version_only` barely matters:** 106 posts (1.4%). Even at poor precision it adds few wrong events, so keeping or dropping it hardly changes week 7. About 21 of the 106 contain dotted dates ("Extension of server maintenance [23.09.2026]"), the known false positive.
+- **Recall is rough:** `none` is 60% of posts and only 10 of them are checked. If 1 of the 10 is a real patch, the Wilson interval puts the misses at about 80 to 1,800 posts. The recall range uses only `none`'s interval and ignores uncertainty in the flagged groups' precision, so it's a rough figure, reported as a wide range rather than fixed with more hand samples now.
+- **Plan (week 3):** Gemini labels all 4,456 unflagged posts, which measures the misses directly; these 40 hand labels become the check on Gemini.
+- **Known gap, not fixed before measuring:** the keyword rule matches whole words only, so "Patches", "Updates & Fixes", "Hotfixes" and "Updated" don't match (in Python too, so parity still holds). If the `none` group turns up such titles, widen it (e.g. `patch(es)?|updat(e|es|ed)|hotfix(es)?`), re-measure, and record both versions here.
+- **Results:** pending labeling.
 
 ## Metrics (2026-10-13)
 
