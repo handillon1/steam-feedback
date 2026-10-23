@@ -174,6 +174,9 @@ Each entry records what was decided, why, and what was rejected. Evidence for th
 - **Kept out of CI:** `sentence_transformers` (torch, gigabytes) is imported inside `main()` only and listed in `requirements-dev.txt`. Tests pass `embed_new` a fake `encode` that returns random unit vectors, so they run in seconds without the 90 MB model.
 - **Cost:** 37 reviews a second on the laptop CPU (smoke run of 3,000), so the first full run takes **about 5 hours**. Daily top-ups are ~2,000 reviews, about a minute.
 Don’t run the loader during an embedding run.
+- **Checked (2026-10-22):** after loading through 2026-10-21, 741,200 of 741,200 non-short reviews are embedded (75 part
+  files), all unit length. Nearest neighbours of a crash review, within one 10,000-review part file: the top 5 are all
+  about crashes (similarity 0.60–0.70), vs 0.20 on average for random reviews.
 
 ### D21. Measuring the patch rule (2026-10-16)
 - **The rule lives in views, not a table:** `news_patch_flags` (one row per post, one column per rule: `rule_tag`, `rule_keyword`, `rule_version`) and `patch_events` (posts any rule flags), in `sql/patch_events.sql`. The rule will change in week 3; a view always reflects the current one, with no rebuild.
@@ -212,6 +215,9 @@ Beta or test-branch patches and DLC releases are both labeled a 0.
   | `keyword_no_tag` | 7/10 | 70% (40–89%) | 1,163 |
   | `version_only` | 5/10 | 50% (24–76%) | 106 |
   | `none` | 2/10 | 20% (6–51%) | 4,456 |
+
+  - **Sizes are live counts:** the notebook weights by current post counts, so estimates drift as posts arrive. After
+    the 2026-10-22 reload (7,620 posts): 909 estimated misses of 4,545 unflagged; precision and recall unchanged.
 
   - **Overall precision 81%**, weighted by group size.
   - **About 890 missed patches** among the 4,456 unflagged posts, so **recall about 73%** (rough range 52–91%).
@@ -271,6 +277,15 @@ Beta or test-branch patches and DLC releases are both labeled a 0.
 - **Rerun check:** a second `python -m collector.load` loaded 0 files, so reloading is safe.
 - **Refresh routine:** `git pull`, then `python -m collector.load`.
 
+### R3. Week 2 complete (2026-10-22)
+- Metrics defined (`metrics.md`), including the negative-trend alert; three findings (F1–F3) with follow-ups; Steam
+  count check (C1), which found the Early Access issue (L6).
+- New collection: daily prices (D19) and news (D17), running cleanly in Actions since 2026-10-15.
+- All 741,200 non-short reviews embedded and checked by nearest neighbours (D20).
+- Patch rule measured on 40 hand labels (D21): precision 81%, recall ~73% (wide range). 92 of 300 games have no
+  detected patch (L4).
+- Carried to week 3: Gemini labels for unflagged posts, patch types, testing a demo/beta title filter.
+
 ## Findings (2026-10-14)
 
 All three use the full year, 2025-10-05 through 2026-10-13, and compare each game with itself (within-game), keeping only games with 30+ reviews on each side. Intervals are 95%, from resampling games. Code and charts are in `notebooks/02_eda.ipynb`; charts are also saved in `figures/`.
@@ -324,6 +339,13 @@ The pool is built from most-played, top releases and US top sellers. All three l
 
 ### L4. Title/tag patch detection misses named content updates
 Large live-service games often name updates without the word "patch" or a `patchnotes` tag. Until detection improves, patch counts undercount exactly the biggest updates.
+**99 of the 265 games that post had no `patchnotes`-tagged post** in 2025-10-05 to 2026-10-12. For 42, every patch
+event comes from the title rules alone (181 events, 6% of the 2,977 flagged), and the keyword rule is ~70% precise
+(D21). **The other 57 get no patch events at all** despite posting (327 posts, median 3), including Overwatch (51
+posts), Grand Theft Auto V Enhanced (46), Aimlabs (26) and Borderlands 3 (20). With the 35 games that post nothing,
+**92 of 300 games have no detected patch**. Overwatch certainly patches, so "no detected patch" doesn't mean "no
+patches", and week 7's low-patch group can't be picked from rule counts until the Gemini pass. Computed from the news
+files (7,380 posts in the window, matching D17).
 
 **35 of 300 games (11.7%) posted no official Steam announcements between 2025-10-05 and 2026-10-13.** Some are finished games that no longer update; others may announce updates elsewhere (Discord, X, their own sites). They're candidates for week 7's low-patch comparison group, but only after checking a few by hand to tell "no updates" apart from "updates announced elsewhere."
 
@@ -341,6 +363,12 @@ Why it matters:
 - **Week 7:** leaving Early Access is probably the biggest single update a game ships, and Early Access reviewers may judge a game differently. The 9 are natural before/after cases; the switch has to be modeled, not mistaken for an ordinary patch.
 - **Selection rules:** "released after X" doesn't mean "no reviews before X" (C1).
 - **Trend metric:** 3 of the first 21 negative-trend flags (Stick It to the Stickman, RuneScape: Dragonwilds, TCG Card Shop Simulator) left Early Access between Sep 14 and Sep 23, at the boundary of the recent window.
+
+### L7. Player-count snapshots are irregular
+Scheduled every 4 hours (6 a day), but GitHub delays and drops scheduled runs: 53 snapshots from 2026-10-08 18:00 to
+2026-10-23 04:00 UTC, 3.7 a day. The median gap is 6 hours, the longest 12, and 13 gaps are over 8 hours. Missed
+snapshots can't be recovered (D14). Week 7 uses daily averages of whatever snapshots exist, never "the count at hour X",
+and compares days with similar numbers of snapshots.
 
 ## Checks (2026-10-15)
 
