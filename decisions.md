@@ -181,6 +181,8 @@ Don’t run the loader during an embedding run.
 - **Official posts only:** all 7,482 posts are `steam_community_announcements`, so the title rule (D9) isn't seeing press articles.
 - **Flagged:** 3,026 of 7,482 posts (40%). By rule, overlapping: tag 1,757, keyword 2,550, version 1,251.
 - **Hand-check sample:** four groups, each defined by the first rule that fires, so every post is in exactly one and dropping a rule shows exactly what is lost:
+Patch = the post announces changes that are now live in the game players are playing.
+Beta or test-branch patches and DLC releases are both labeled a 0.
 
   | Group | Posts | Measures |
   | --- | --- | --- |
@@ -194,7 +196,39 @@ Don’t run the loader during an embedding run.
 - **Recall is rough:** `none` is 60% of posts and only 10 of them are checked. If 1 of the 10 is a real patch, the Wilson interval puts the misses at about 80 to 1,800 posts. The recall range uses only `none`'s interval and ignores uncertainty in the flagged groups' precision, so it's a rough figure, reported as a wide range rather than fixed with more hand samples now.
 - **Plan (week 3):** Gemini labels all 4,456 unflagged posts, which measures the misses directly; these 40 hand labels become the check on Gemini.
 - **Known gap, not fixed before measuring:** the keyword rule matches whole words only, so "Patches", "Updates & Fixes", "Hotfixes" and "Updated" don't match (in Python too, so parity still holds). If the `none` group turns up such titles, widen it (e.g. `patch(es)?|updat(e|es|ed)|hotfix(es)?`), re-measure, and record both versions here.
-- **Results:** pending labeling.
+- **What counts as a patch (2026-10-22):** a post announcing at least one change that is now live in the game players
+  are playing, whether or not players notice it, and whatever it's called (patch, update, hotfix, season). Judged from
+  the post body, not the title.
+  - **1:** bug fixes, balance, content updates and seasons, in-game events the developers switched on, server-side
+    changes, security/engine fixes, Early Access builds, leaving Early Access (noted "1.0"). A status roundup counts if
+    it reports one deployed fix.
+  - **0:** roadmaps and "coming soon", a new game's launch, demos and pre-release posts, test servers and beta branches,
+    maintenance notices, sales, streams, community events and showcases, recaps of an update that has its own post.
+- **Results:**
+
+  | Group | Patches | Rate (95% Wilson) | Posts |
+  | --- | --- | --- | --- |
+  | `tag` | 9/10 | 90% (60–98%) | 1,757 |
+  | `keyword_no_tag` | 7/10 | 70% (40–89%) | 1,163 |
+  | `version_only` | 5/10 | 50% (24–76%) | 106 |
+  | `none` | 2/10 | 20% (6–51%) | 4,456 |
+
+  - **Overall precision 81%**, weighted by group size.
+  - **About 890 missed patches** among the 4,456 unflagged posts, so **recall about 73%** (rough range 52–91%).
+  - **Recall is a first estimate only:** each `none` label stands for ~446 posts. Reviewing 6 labels against the
+    definition moved recall from 67% to 73%; one `none` label accounted for most of that.
+- **Where the rule goes wrong:**
+  - `tag` is reliable. Its one 0 is a real patch for a separate demo app.
+  - `keyword_no_tag` adds real patches, but "update" also matches demos, closed betas and "Community Update" newsletters.
+  - `version_only` is a coin flip on 106 posts (~50 false events), small enough to keep or drop.
+  - The 2 misses in `none` name no patch: an in-game event going live after maintenance, and an anniversary event.
+- **Follow-ups:**
+  - **Week 3:** Gemini labels all 4,456 unflagged posts, checked against these 40. The prompt includes hard negatives
+    (FC 27 closed-beta notes, demo updates, a mod.io map showcase). Test excluding titles with demo / beta / test
+    server / community update against these labels. Add a patch type (bugfix, balance, content, technical, server-side).
+  - **Week 7:** merge a game's patch posts within a few days into one patch episode. Beta-branch posts give an early
+    date for some patches. The Oct 2025 Unity security patches are a negative control (patches that shouldn't change
+    reviews).
 
 ## Metrics (2026-10-13)
 
