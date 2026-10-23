@@ -178,6 +178,10 @@ Don’t run the loader during an embedding run.
   files), all unit length. Nearest neighbours of a crash review, within one 10,000-review part file: the top 5 are all
   about crashes (similarity 0.60–0.70), vs 0.20 on average for random reviews.
 
+- **Neighbour check (2026-10-23):** 50,000 reviews from 5 random part files, top 10 per query. Queries picked by keyword weren't always about that topic (the "refund" query was about co-op kicks; the first "matchmaking" query mixed crashes and matchmaking), and neighbours followed each review's main complaint. With single-topic queries:
+crash 8/10 on topic (0 same game), matchmaking 10/10 (2 same game); top-10 similarity A–B vs ~0.20 for random reviews. Refund stays mixed for any pick: it's an outcome that follows many complaints, not a complaint, so it isn't a week 3 topic (possible separate flag). One vector per review means clustering gives one topic per review;
+topics are labeled separately, several per review allowed (D23).
+
 ### D21. Measuring the patch rule (2026-10-16)
 - **The rule lives in views, not a table:** `news_patch_flags` (one row per post, one column per rule: `rule_tag`, `rule_keyword`, `rule_version`) and `patch_events` (posts any rule flags), in `sql/patch_events.sql`. The rule will change in week 3; a view always reflects the current one, with no rebuild.
 - **SQL and Python must agree:** the rule exists twice, as `is_patch` (`collector/parse.py`) and as the views. `notebooks/04_patch_events.ipynb` checks them against each other: they agree on all 7,482 posts. Postgres regexes use `\y` for a word boundary (`\b` is backspace there), and `rule_version` uses `~*` because Python compiles the whole pattern with `re.I`.
