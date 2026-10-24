@@ -217,7 +217,7 @@ Beta or test-branch patches and DLC releases are both labeled a 0.
   | --- | --- | --- | --- |
   | `tag` | 9/10 | 90% (60–98%) | 1,757 |
   | `keyword_no_tag` | 7/10 | 70% (40–89%) | 1,163 |
-  | `version_only` | 5/10 | 50% (24–76%) | 106 |
+  | `version_only` | 6/10 | 60% (31–83%) | 106 |
   | `none` | 2/10 | 20% (6–51%) | 4,456 |
 
   - **Sizes are live counts:** the notebook weights by current post counts, so estimates drift as posts arrive. After
@@ -239,6 +239,30 @@ Beta or test-branch patches and DLC releases are both labeled a 0.
   - **Week 7:** merge a game's patch posts within a few days into one patch episode. Beta-branch posts give an early
     date for some patches. The Oct 2025 Unity security patches are a negative control (patches that shouldn't change
     reviews).
+  - **Added 2026-10-23 (test-set labeling):** open beta = 1 if the whole game is the open beta (the live game), 0 if
+    it's an opt-in branch. Same-day or next-day scheduled updates that list their changes = 1 (many games post only
+    once per update; the date error is under a day); further-out schedules and maintenance-only notices = 0. Free
+    DLC released to every owner = 1 (content); paid DLC and free DLC previews = 0 unless the base game also changes.
+  - **Updated 2026-10-23:** Ashenfall (`version_only`) relabeled 1 under the same-day rule. With the test set's 30
+    unflagged posts (5 patches, D22), the unflagged patch rate is 7 of 40 (17%, 95% interval 9–32%). With current
+    group sizes (7,620 posts): precision 81%, about 795 missed patches of 4,545 unflagged, **recall about 76% (range
+    63–86%)**, up from the week-2 estimate of 73% (52–91%).
+
+### D22. Patch labels from Gemini (2026-10-23)
+- **Setup:** `gemini-3.8-flash`, temperature 0, prompt `prompts/patch_v1.txt` (the D21 rules plus 6 examples from the
+  development set), structured JSON output (reason, is_patch, patch_type). Free tier: 5 requests/minute and 20/day,
+  so 20 posts per call (`BATCH = 20`, used for development, test and full runs alike). Answers cached per prompt
+  and model in `data/gemini/`.
+- **Development set (34 of the 40 week-2 posts, excluding the 6 used as examples):** 32/34. One disagreement was a
+  week-2 label made before the same-day rule existed (Ashenfall, relabeled 1); the other (Sky's anniversary) is
+  genuinely ambiguous and was left alone rather than tuning the prompt to one post: 33/34. v1 frozen.
+- **Test set (50 posts, labeled and committed before the prompt was written):** Gemini agreed with 45/50 as labeled;
+  the D9 rule with 35/50. All 5 disagreements were hand-label errors under the written rules (3 rules were added
+  during labeling and earlier labels weren't rechecked); corrected, Gemini 50/50 and the rule 34/50 (precision 15/20,
+  recall 15/20). Only disagreements were re-reviewed, so 50/50 is an upper bound and 45/50 a lower bound.
+- **Next:** label the 1,187 posts from L4's 99 untagged games first, then all unflagged posts (~228 calls, ~12 days).
+  A consistency pass over every note mentioning beta, scheduling, DLC, events, demos or tests (9 posts) found no
+  further labels breaking a rule.
 
 ## Metrics (2026-10-13)
 
