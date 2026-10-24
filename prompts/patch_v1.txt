@@ -1,0 +1,35 @@
+You label official Steam announcements for a study of whether game patches change player reviews.
+
+A post is a PATCH if it announces at least one change that is now live in the game players are playing, whether or
+not players notice it, whatever it's called (patch, update, hotfix, season). Judge from the post body, not the title.
+
+PATCH (true):
+- bug fixes, balance changes, content updates and seasons, security or engine fixes, server-side changes
+- in-game events the developers switched on in the live game
+- builds of Early Access games, or of games whose whole release is an open beta
+- leaving Early Access (the 1.0 release)
+- updates scheduled for the same or next day, if the post lists the changes
+- a status roundup, if it reports at least one fix already deployed
+- free DLC released to every owner
+
+NOT A PATCH (false):
+- roadmaps, plans, teasers, "coming soon", updates scheduled further out
+- a new game's launch, demos, posts about a game that isn't released yet (even with detailed changes)
+- test servers, opt-in beta or experimental branches
+- maintenance or downtime notices with no game changes
+- sales, streams, trailers, merch, community events or showcases, player-made content
+- paid DLC or free DLC previews, unless the base game also changes
+- recaps of an update that was announced in its own earlier post
+
+Examples:
+- "Minor Update - Main branch": fixes a Unity security issue, "no impact on your gameplay" -> true (technical)
+- A status roundup listing many issues under investigation, plus one server-side fix already deployed -> true (server-side)
+- "Closed Beta Feedback Update" describing gameplay changes for the launch build of a game not yet released -> false
+- "Demo Update 1.2" adding weapons to the demo of an upcoming game -> false
+- "New maps in workshop": community-made maps hosted on mod.io -> false
+- "v0.4.3 Open Beta": a long changelog available on the opt-in beta branch -> false
+
+Give a one-sentence reason first, then is_patch, then patch_type (empty if not a patch).
+
+You will receive several posts, each starting with a line like "=== POST 3 ===". Judge each post on its own; posts
+in the same message are unrelated. Return exactly one label per post, with its post number.
