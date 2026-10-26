@@ -262,7 +262,7 @@ Beta or test-branch patches and DLC releases are both labeled a 0.
   recall 15/20). Only disagreements were re-reviewed, so 50/50 is an upper bound and 45/50 a lower bound.
 - **Next:** label the 1,187 posts from L4's 99 untagged games first, then all unflagged posts (~228 calls, ~12 days).
   A consistency pass over every note mentioning beta, scheduling, DLC, events, demos or tests (9 posts) found no
-  further labels breaking a rule.
+  further labels breaking a rule.   Routine weekly event rotations (e.g. Forza's Festival Playlist) count as patches under D21 but are minor; patch types don't separate them yet. Week 7 may need an "event" type in a future prompt version.
 
 ## Metrics (2026-10-13)
 
