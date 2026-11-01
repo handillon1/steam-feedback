@@ -264,6 +264,114 @@ Beta or test-branch patches and DLC releases are both labeled a 0.
   A consistency pass over every note mentioning beta, scheduling, DLC, events, demos or tests (9 posts) found no
   further labels breaking a rule.   Routine weekly event rotations (e.g. Forza's Festival Playlist) count as patches under D21 but are minor; patch types don't separate them yet. Week 7 may need an "event" type in a future prompt version.
 
+### D23. Complaint topics and labeling rules (2026-11-01)
+- **A review gets a set of topics:** zero, one or several. "Combat is repetitive and the story forgettable" is two.
+- **Count a topic only if the review names the problem** clearly enough that a developer would know what to fix.
+  "Worst game ever" names nothing, so no topic.
+- **Mentions aren't complaints:** "I played 8 hours" is no topic; "after 8 hours there's nothing left to do" is
+  topic 17.
+- **Complaints in positive reviews count** and are labeled the same way; the analysis separates them by thumbs-up/down.
+- **Outcomes aren't topics:** refunding, uninstalling or quitting. Label the problem that caused it (D20).
+- **Jokes and hyperbole** ("this game ruined my life", from fans) get no topic.
+- **Not in English:** flagged `not_english`, no topics (L8).
+- **A deliberate design choice the player dislikes is not a bug.** It belongs in the design topic it's about.
+- **Source:** topics found by clustering and keyword checks in `notebooks/06_topics.ipynb` (2026-10-30).
+
+#### Technical
+
+**1. Crashes** (`crash`). The game closes, freezes or hard-locks during play.
+- *Not this topic:* fails before reaching gameplay → 2; low frame rate → 3.
+- *Evidence:* c3 (10/10), c33.
+
+**2. Won't launch / compatibility** (`wont_launch`). The game can't be started or played on the player's system.
+- *Includes:* launch errors, error codes, black screens at startup, Steam Deck/Linux/OS-version problems.
+- *Not this topic:* runs, but slowly → 3; starts, then crashes → 1.
+- *Evidence:* c0 (8/10), c18.
+
+**3. Performance & optimization** (`performance`). It runs, but badly: low or unstable frame rate, stutter, long
+  loading, high hardware demands.
+- *Evidence:* c7 (10/10), c33.
+
+**4. Bugs & glitches** (`bugs`). The game runs but doesn't work as intended: broken quests, softlocks, physics or AI
+  glitches, progression-blocking bugs, broken audio.
+- *Not this topic:* crashes → 1; can't run → 2; lost saves → 5; a deliberate design the player dislikes → its design
+  topic (general rule).
+- *Evidence:* c22 (10/10), c18.
+
+**5. Lost saves & progress** (`lost_saves`). The game has an issue saving progress, whether that be through crashing or failing to save or autosave
+- *Not this topic:* a deliberate progress reset by design (e.g. prestige systems) → 17 or 18
+- *Evidence:* c35 (10/10).
+
+**6. Servers & connectivity** (`servers`). Online play fails technically: can't connect or join, disconnects, lag,
+  server outages, online-only games unplayable while servers are down.
+- *Not this topic:* how multiplayer is designed or how few people play → 13.
+- *Evidence:* c23 (6/10 connection; the others are multiplayer design).
+
+**7. Accounts, launchers, DRM & privacy** (`accounts_drm`). Game requires 3rd party, account, or verification that makes the game frustrating. Coult be associated with running in the background or tracking.
+- *Evidence:* c8 (8/10).
+
+**8. Controls, camera & UI** (`controls_ui`). Game has poor controls, frustrating camera or confusing UI.
+- *Hint:* "the controls are unresponsive" → 8; "the dodge timing is unfair" → 18.
+- *Evidence:* c27 (10/10), c39 (5/10).
+
+#### Business
+
+**9. Price & value** (`price_value`). The purchase price vs. what you get: "not worth $X", "wait for a sale", too
+  short for the price.
+- *Evidence:* c12 (5/10), c11.
+
+**10. Monetization & pay-to-win** (`monetization`). Spending *inside* the game: microtransactions, gacha, loot boxes,
+  battle passes, pay-to-win, features behind a paywall.
+- *Evidence:* c16 (5/10), c11.
+
+**11. DLC practices** (`dlc`). Paid add-ons and how content is split: too many DLCs, content cut from the base game,
+  paid DLC during Early Access, editions.
+- *Evidence:* c29 (8/10).
+
+#### Players & developers
+
+**12. Cheaters, toxicity & moderation** (`cheaters_toxicity`).Cheaters, toxic players, report systems, wrongful bans, scams
+- *Evidence:* c30 (5/10).
+
+**13. Multiplayer & co-op design** (`multiplayer`). How multiplayer is designed or populated.
+- *Includes:* matchmaking, PvP balance, missing or limited co-op, host-only progress (by design), too few players.
+- *Not this topic:* can't connect, disconnects, lag → 6; a multiplayer bug → 4 or 5; cheaters, toxicity → 12.
+- *Evidence:* c24 (5/10), c23; "dead game" keyword check (est. 0.2%, merged here).
+
+**14. Updates & developer support** (`updates_support`). Updates or team behind updates made poor changes that either broke the game or made it worse or the game stopped getting updates / was abandoned.
+- *Evidence:* c32 (6/10).
+
+**15. Generative AI** (`gen_ai`). The game or company uses generative AI to make content (art, voices, writing,
+  music), or the company is moving toward AI.
+- *Not this topic:* bad enemy, companion or bot AI → 18; an upscaling setting → 3 or 8.
+- *Evidence:* c21 (3/10; the rest of the cluster is game-AI complaints).
+
+**16. Politics & social themes** (`politics`). Objections to the political or social content of the game, or to the company’s political conduct, in any direction: e.g. ‘woke’/DEI, religious references, sexualized designs, developers’ politics. 
+- objecting to the politics or message → 16; criticizing the writing's quality → 19; can be both.
+- *Evidence:* keyword check, est. 0.8%.
+
+#### Design
+
+**17. Boring, repetitive, grind or too little content** (`boring_grind`). The game runs out of things worth doing.
+- *Includes:* repetitive loops, grind and slow progression, nothing to do after X hours, too short, shallow systems.
+- *Not this topic:* too hard or too easy → 18; dull story → 19; only mentions playtime → no topic.
+- *Also:* "only fun with friends" is 17 unless it names a multiplayer problem.
+- *Example (both 17 and 18):* "you can max everything out very quickly, then it becomes boring. The game is way too
+  easy to optimize."
+- *Evidence:* c10 (10/10), c13, c37, c19, c5.
+
+**18. Difficulty, balance & combat** (`difficulty_combat`). Too hard or easy, difficulty spikes, unbalanced parts of the game (builds, combat feel, boss design, bad enemy AI)
+- *Evidence:* c2 (7/10), c1, c36, c26.
+
+**19. Story, writing & characters** (`story`). Poor story content, writing, story, writing, dialogue, characters, voice acting.
+- *Evidence:* c25 (7/10), c28 (6/10).
+
+**20. Tutorial & onboarding** (`tutorial`). Bad or missing tutorial, too complex to learn, "had to watch videos"
+- *Evidence:* c15 (9/10).
+
+**21. Worse than predecessor or a copy** (`worse_than_predecessor`). The complaint is that the game is worse than an
+  earlier game in its series, or an inferior copy of another game.
+
 ## Metrics (2026-10-13)
 
 ### D18. Very short reviews are flagged, not dropped
