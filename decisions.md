@@ -339,6 +339,7 @@ Beta or test-branch patches and DLC releases are both labeled a 0.
 - *Evidence:* c24 (5/10), c23; "dead game" keyword check (est. 0.2%, merged here).
 
 **14. Updates & developer support** (`updates_support`). Updates or team behind updates made poor changes that either broke the game or made it worse or the game stopped getting updates / was abandoned.
+- *Not this topic:* too little content with no mention of updates → 17; both → 14 and 17.
 - *Evidence:* c32 (6/10).
 
 **15. Generative AI** (`gen_ai`). The game or company uses generative AI to make content (art, voices, writing,
@@ -363,14 +364,23 @@ Beta or test-branch patches and DLC releases are both labeled a 0.
 **18. Difficulty, balance & combat** (`difficulty_combat`). Too hard or easy, difficulty spikes, unbalanced parts of the game (builds, combat feel, boss design, bad enemy AI)
 - *Evidence:* c2 (7/10), c1, c36, c26.
 
-**19. Story, writing & characters** (`story`). Poor story content, writing, story, writing, dialogue, characters, voice acting.
+**19. Story, writing & characters** (`story`). Poor story content, writing, story, writing, dialogue, characters
 - *Evidence:* c25 (7/10), c28 (6/10).
+- Not this topic: how it’s voiced → 22
 
 **20. Tutorial & onboarding** (`tutorial`). Bad or missing tutorial, too complex to learn, "had to watch videos"
 - *Evidence:* c15 (9/10).
 
 **21. Worse than predecessor or a copy** (`worse_than_predecessor`). The complaint is that the game is worse than an
   earlier game in its series, or an inferior copy of another game.
+
+**22. Graphics & audio** (`graphics_audio`). How the game looks or sounds: ugly or dated graphics, bad art style or
+  animations, scenes too dark to see, poor sound effects or music, bad voice acting.
+- *Not this topic:* low frame rate or stutter → 3; visual bugs such as broken textures or holes in the terrain → 4;
+  camera, screen shake → 8; what characters say → 19.
+- *Also:* "the art is worse than the old games" is 22 *and* 21.
+- *Evidence:* keyword check: broad search 12.1% of negative reviews but 0/20 complaints (mostly praise);
+  narrow search 0.9%, 12/20 relevant, est. 0.55% (a floor).
 
 ## Metrics (2026-10-13)
 
