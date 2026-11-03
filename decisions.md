@@ -264,6 +264,8 @@ Beta or test-branch patches and DLC releases are both labeled a 0.
   A consistency pass over every note mentioning beta, scheduling, DLC, events, demos or tests (9 posts) found no
   further labels breaking a rule.   Routine weekly event rotations (e.g. Forza's Festival Playlist) count as patches under D21 but are minor; patch types don't separate them yet. Week 7 may need an "event" type in a future prompt version.
 
+- **Frozen 2026-11-03 for test labeling:** 22 topics. Changes after this date go in a new version, after the test.
+
 ### D23. Complaint topics and labeling rules (2026-11-01)
 - **A review gets a set of topics:** zero, one or several. "Combat is repetitive and the story forgettable" is two.
 - **Count a topic only if the review names the problem** clearly enough that a developer would know what to fix.
@@ -313,6 +315,7 @@ Beta or test-branch patches and DLC releases are both labeled a 0.
 **8. Controls, camera & UI** (`controls_ui`). Game has poor controls, frustrating camera or confusing UI.
 - *Hint:* "the controls are unresponsive" → 8; "the dodge timing is unfair" → 18.
 - *Evidence:* c27 (10/10), c39 (5/10).
+- *Includes:* input devices (controllers, wheels, Steam Deck controls), missing quality-of-life conveniences, unclear item or menu information.
 
 #### Business
 
@@ -323,6 +326,7 @@ Beta or test-branch patches and DLC releases are both labeled a 0.
 **10. Monetization & pay-to-win** (`monetization`). Spending *inside* the game: microtransactions, gacha, loot boxes,
   battle passes, pay-to-win, features behind a paywall.
 - *Evidence:* c16 (5/10), c11.
+- *Includes:* subscription terms and gacha odds.
 
 **11. DLC practices** (`dlc`). Paid add-ons and how content is split: too many DLCs, content cut from the base game,
   paid DLC during Early Access, editions.
@@ -341,6 +345,7 @@ Beta or test-branch patches and DLC releases are both labeled a 0.
 **14. Updates & developer support** (`updates_support`). Updates or team behind updates made poor changes that either broke the game or made it worse or the game stopped getting updates / was abandoned.
 - *Not this topic:* too little content with no mention of updates → 17; both → 14 and 17.
 - *Evidence:* c32 (6/10).
+- *Includes:* fear the game will be abandoned, e.g. a sequel announced before the game is finished.
 
 **15. Generative AI** (`gen_ai`). The game or company uses generative AI to make content (art, voices, writing,
   music), or the company is moving toward AI.
@@ -364,12 +369,13 @@ Beta or test-branch patches and DLC releases are both labeled a 0.
 **18. Difficulty, balance & combat** (`difficulty_combat`). Too hard or easy, difficulty spikes, unbalanced parts of the game (builds, combat feel, boss design, bad enemy AI)
 - *Evidence:* c2 (7/10), c1, c36, c26.
 
-**19. Story, writing & characters** (`story`). Poor story content, writing, story, writing, dialogue, characters
+**19. Story, writing & characters (story). Poor story, writing, dialogue or characters.
 - *Evidence:* c25 (7/10), c28 (6/10).
 - Not this topic: how it’s voiced → 22
 
 **20. Tutorial & onboarding** (`tutorial`). Bad or missing tutorial, too complex to learn, "had to watch videos"
 - *Evidence:* c15 (9/10).
+- *Not this topic:* can't get through the tutorial because of the controls → 8.
 
 **21. Worse than predecessor or a copy** (`worse_than_predecessor`). The complaint is that the game is worse than an
   earlier game in its series, or an inferior copy of another game.
