@@ -266,6 +266,12 @@ Beta or test-branch patches and DLC releases are both labeled a 0.
 
 - **Frozen 2026-11-03 for test labeling:** 22 topics. Changes after this date go in a new version, after the test.
 
+- **Model switch (2026-11-04):** gemini-3.8-flash returned 503 (overloaded) on every run from 11-02 to 11-04, including
+  a one-line test request; 972 of 1,162 priority posts were labeled. Switching to gemini-3.6-flash (5/minute, 20/day),
+  same prompt v1 and batch size 20. **Rule, set before running:** adopt it if it agrees with at least 32 of the 34
+  development posts; then run the 50 test posts once and report the score whatever it is. Every full-run label
+  comes from the new model; the 3.8 Flash answers stay in their own file as a record.
+
 ### D23. Complaint topics and labeling rules (2026-11-01)
 - **A review gets a set of topics:** zero, one or several. "Combat is repetitive and the story forgettable" is two.
 - **Count a topic only if the review names the problem** clearly enough that a developer would know what to fix.
