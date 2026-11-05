@@ -272,6 +272,17 @@ Beta or test-branch patches and DLC releases are both labeled a 0.
   development posts; then run the 50 test posts once and report the score whatever it is. Every full-run label
   comes from the new model; the 3.8 Flash answers stay in their own file as a record.
 
+- **Result (2026-11-05):** 3.6 Flash passed the adoption rule (33/34 development posts) and
+  agreed with **49/50 test posts**: precision 20/21 (95% Wilson 77–99%), recall 20/20 (84–100%).
+  The rule on the same labels: 40/50, precision 15/20, recall 15/20. The one disagreement is
+  STALZONE "Another wave of rumors" (2026-10-19), a short lore teaser labeled 0. Gemini read
+  "head to the Path of Fools and uncover the truth" as an in-game stash going live (1). It's
+  borderline, like Sky's anniversary, so the label and prompt are unchanged. All full-run
+  labels from here use 3.6 Flash.
+- **Correction (2026-11-05):** the rule's corrected test score above should read 40/50, not
+  34/50. Precision 15/20 and recall 15/20 mean 5 false positives and 5 misses. The rule's SQL
+  hasn't changed since 2026-10-18, so 34 was an arithmetic slip.
+
 ### D23. Complaint topics and labeling rules (2026-11-01)
 - **A review gets a set of topics:** zero, one or several. "Combat is repetitive and the story forgettable" is two.
 - **Count a topic only if the review names the problem** clearly enough that a developer would know what to fix.
