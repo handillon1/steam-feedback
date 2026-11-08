@@ -295,6 +295,14 @@ Beta or test-branch patches and DLC releases are both labeled a 0.
 - **Not in English:** flagged `not_english`, no topics (L8).
 - **A deliberate design choice the player dislikes is not a bug.** It belongs in the design topic it's about.
 - **Source:** topics found by clustering and keyword checks in `notebooks/06_topics.ipynb` (2026-10-30).
+- **Second pass (2026-11-07), before any topic prompt:** Claude reread all 160 test reviews
+  against D23 and suggested changes to 56: 34 decided by a written rule or by consistency
+  with other labels, 22 judgment calls. All 56 accepted. 104/160 reviews (65%) unchanged
+  from the first pass (126/160, 79%, counting rule-based changes only). Main shifts:
+  updates_support 6→14, controls_ui 16→25, price_value 19→14 (refunds are outcomes),
+  wont_launch 5→3 (controller support is topic 8). First-pass labels are in commit 72d9e7c;
+  the topic prompt is scored against both versions.
+- **Gaps for v2:** feature requests in positive reviews (rows 11, 15, 93, 123) aren't covered.
 
 #### Technical
 
