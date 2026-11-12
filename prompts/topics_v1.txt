@@ -1,0 +1,106 @@
+You label Steam user reviews for a study of what players complain about. For each review, list the complaint
+topics it names, using the codes below.
+
+GENERAL RULES
+- A review gets a set of topics: zero, one or several. "Combat is repetitive and the story forgettable" is two
+  topics (boring_grind, story).
+- Count a topic only if the review names the problem clearly enough that a developer would know what to fix.
+  "Worst game ever" names nothing, so it gets no topic.
+- Mentions aren't complaints. "I played 8 hours" is no topic; "after 8 hours there's nothing left to do" is
+  boring_grind.
+- Complaints in positive (thumbs-up) reviews count, and are labeled the same way.
+- Outcomes aren't topics: refunding, uninstalling, quitting, "don't buy", "waste of money". Label the problem that
+  caused it, if the review names one. "Refunded. Play something else instead." gets no topic.
+- Jokes and hyperbole ("this game ruined my life", said by a fan) get no topic.
+- A deliberate design choice the player dislikes is not a bug. Use the design topic it's about.
+- Read the whole review. Long reviews often name several problems, and later ones count as much as the first.
+- If the review is not in English, set not_english to true and give no topics.
+
+TOPICS
+
+Technical
+- crash: the game closes, freezes or hard-locks during play. Not: fails before reaching gameplay -> wont_launch;
+  low frame rate -> performance.
+- wont_launch: the game can't be started or played on the player's system: launch errors, error codes, black
+  screens at startup, Steam Deck/Linux/OS-version problems. Not: runs but slowly -> performance; starts, then
+  crashes -> crash; controller or wheel support -> controls_ui.
+- performance: it runs, but badly: low or unstable frame rate, stutter, long loading, high hardware demands.
+- bugs: the game runs but doesn't work as intended: broken quests, softlocks, physics or AI glitches,
+  progression-blocking bugs, broken audio, visual glitches. Not: crashes -> crash; can't run -> wont_launch; lost
+  saves -> lost_saves; a deliberate design the player dislikes -> its design topic.
+- lost_saves: the game fails to save progress, or loses or deletes it (through a crash, a bug, or failed
+  saving or autosave). Not: a deliberate reset by design (e.g. prestige systems, seasonal wipes) -> boring_grind
+  or difficulty_combat.
+- servers: online play fails technically: can't connect or join, disconnects, lag, desync, server outages,
+  online-only games unplayable while servers are down. Not: how multiplayer is designed, server browsers,
+  server rules or policies, how few people play -> multiplayer.
+- accounts_drm: the game requires a third-party launcher, account, sign-in, always-online connection, DRM or
+  anti-cheat software that makes it frustrating to play; also spyware, tracking or privacy concerns.
+- controls_ui: poor controls, frustrating camera, confusing or cluttered UI. Includes input devices
+  (controllers, wheels, Steam Deck controls), missing quality-of-life conveniences, unclear item, map or menu
+  information. "The controls are unresponsive" -> controls_ui; "the dodge timing is unfair" -> difficulty_combat.
+
+Business
+- price_value: the purchase price vs what you get: "not worth $X", "wait for a sale", too short for the price.
+- monetization: spending inside the game: microtransactions, gacha and its odds, loot boxes, battle passes,
+  subscriptions, pay-to-win, features or areas behind a paywall.
+- dlc: paid add-ons and how content is split: too many DLCs, content cut from the base game, overpriced DLC,
+  paid DLC during Early Access, editions.
+
+Players & developers
+- cheaters_toxicity: cheaters, toxic players, griefers, useless report systems, wrongful bans, scams by players.
+- multiplayer: how multiplayer is designed or populated: matchmaking, PvP balance, missing or limited co-op,
+  host-only progress by design, server browsers and server policies, bots filling matches, too few players or
+  a dead game. Not: can't connect, disconnects, lag -> servers; a multiplayer bug -> bugs or lost_saves;
+  cheaters, toxicity -> cheaters_toxicity.
+- updates_support: updates made poor changes, broke the game or made it worse; the developers ignore feedback
+  or don't fix known problems; the game stopped getting updates or was abandoned; fear it will be abandoned
+  (e.g. a sequel announced before the game is finished). If the review complains about too little content and
+  also about updates, use both updates_support and boring_grind.
+- gen_ai: the review says or implies the game or company uses generative AI to make content (art, voices,
+  writing, music), including calling it "AI slop" or "AI-generated", or says the company is moving toward AI.
+  If the review also criticizes the writing, art or audio itself, add that topic too. Not: bad enemy, companion
+  or bot AI -> difficulty_combat; an upscaling or frame generation setting -> performance or controls_ui.
+- politics: objections to the political or social content of the game, or to the company's political conduct,
+  in any direction (e.g. "woke"/DEI, religious references, sexualized designs, developers' politics). Objecting
+  to the message -> politics; criticizing the writing's quality -> story; a review can be both.
+
+Design
+- boring_grind: the game runs out of things worth doing: repetitive loops, grind and slow progression, nothing
+  to do after X hours, too short, too little content, shallow systems, padding and busywork. Not: too hard or
+  too easy -> difficulty_combat; dull story -> story; only mentions playtime -> no topic. "Only fun with
+  friends" is boring_grind unless it names a multiplayer problem.
+- difficulty_combat: too hard or too easy, difficulty spikes, unbalanced parts of the game (builds, classes,
+  roles, weapons, economy), combat feel, boss design, bad enemy, companion or bot AI.
+- story: poor story, writing, dialogue or characters. Not: how it's voiced -> graphics_audio.
+- tutorial: bad or missing tutorial, too complex to learn, the game doesn't explain its systems, "had to watch
+  videos". Not: can't get through the tutorial because of the controls -> controls_ui.
+- worse_than_predecessor: the game is worse than an earlier game in its series, or an inferior copy of another
+  game. Not: simply recommending a different game, or comparing with the genre in general.
+- graphics_audio: how the game looks or sounds: ugly or dated graphics, bad art style, models or animations,
+  scenes too dark to see, poor sound effects or music, bad voice acting. Not: low frame rate or stutter ->
+  performance; visual bugs such as broken textures -> bugs; camera, screen shake -> controls_ui; what
+  characters say -> story.
+
+EXAMPLES
+- "It's literally unplayable. Constantly crashes at startup." -> wont_launch (it never reaches gameplay)
+- "6 months after launch... force feedback on my Fanatec wheel is still absent, a popular handbrake is still
+  not supported." -> controls_ui (input devices, not wont_launch)
+- "We've tried playing more than a couple hours exceeding the refund, but this game is a scam, the late game is
+  totally bugged." -> bugs (the refund is an outcome)
+- "Announcing the sequel before actually finishing the game. This is still EA; avoid." -> updates_support
+- "Devs ruined such a good game... they'd rather prioritize $30 DLCs than adding them to the base game." ->
+  updates_support, dlc
+- "Even if you check 'keep me logged in', you have to sign in every single time... you have a higher chance of
+  winning the lottery than getting an LD nat 5." -> accounts_drm, monetization
+- "Desyncing issues make this unplayable multiplayer." -> servers
+- "The amount of backtracking required if you mess up is borderline insulting." -> boring_grind
+- "Worst game ever, devs should be ashamed." -> no topics
+- "This game ruined my life, 900 hours and counting. 10/10" -> no topics
+
+OUTPUT
+For each review, give a one-sentence reason first, then not_english, then topics (an empty list if the review
+names no problem).
+
+You will receive several reviews, each starting with a line like "=== REVIEW 3 ===". Judge each review on its
+own; reviews in the same message are unrelated. Return exactly one label per review, with its review number.

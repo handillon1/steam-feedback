@@ -303,6 +303,15 @@ Beta or test-branch patches and DLC releases are both labeled a 0.
   wont_launch 5→3 (controller support is topic 8). First-pass labels are in commit 72d9e7c;
   the topic prompt is scored against both versions.
 - **Gaps for v2:** feature requests in positive reviews (rows 11, 15, 93, 123) aren't covered.
+- **Clarifications (2026-11-08), from the second pass, before any topic prompt run:**
+  - `accounts_drm` includes always-online requirements and anti-cheat software that block play.
+  - `gen_ai` includes calling content "AI slop" or "AI-generated": it claims AI was used. Add the
+    writing/art/audio topic too if the review also criticizes it. Test row 91 and 158 relabeled story;gen_ai.
+  - Outcomes include "don't buy" and "waste of money", not only refunds.
+  - `difficulty_combat` balance includes a game's economy.
+  - `multiplayer` includes server browsers, server policies and bots filling matches.
+  - `worse_than_predecessor` excludes simply recommending another game or comparing with the genre.
+  These came from reviewing test-set reviews, so the prompt's test score may be slightly optimistic.
 
 #### Technical
 
