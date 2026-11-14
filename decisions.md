@@ -282,6 +282,21 @@ Beta or test-branch patches and DLC releases are both labeled a 0.
 - **Correction (2026-11-05):** the rule's corrected test score above should read 40/50, not
   34/50. Precision 15/20 and recall 15/20 mean 5 false positives and 5 misses. The rule's SQL
   hasn't changed since 2026-10-18, so 34 was an arithmetic slip.
+- **Model switch 2 (2026-11-12):** gemini-3.6-flash returned 503 on every run since 11-10 afternoon
+  (552 of 1,162 priority posts labeled), matching forum reports of widespread 503s on 3.6/3.8 Flash.
+  Switching to gemini-3.5-flash-lite (RPM __, RPD __), same prompt v1, batch 20. **Rule, set before
+  running:** adopt if it agrees with at least 32 of 34 development posts; then run the 50 test posts once
+  and report the score whatever it is. If adopted, all 1,162 priority posts are relabeled with it; the
+  3.6 Flash answers stay as a record and are compared with it on the posts both labeled.
+
+- **3.5 Flash-Lite (2026-11-12): 31/34 development posts, not adopted.** Misses: Eye on Ashenfall
+     (next-day rule), CODE VEIN II demo update (demo rule; it labeled a demo as a patch), Sky's 7th
+     Anniversary (known borderline). Test set not run.
+
+- **Back to 3.6 Flash (2026-11-13):** Lite was not adopted (31/34), so 3.6 Flash stays the adopted model;
+  its 552 priority labels stand and the run resumes from there. The AI Studio rate-limit page shows peak
+  usage over the last 90 days, not today's count, so the daily limit was never the problem; the blocker is
+  503 overload on Google's side.
 
 ### D23. Complaint topics and labeling rules (2026-11-01)
 - **A review gets a set of topics:** zero, one or several. "Combat is repetitive and the story forgettable" is two.
