@@ -288,15 +288,18 @@ Beta or test-branch patches and DLC releases are both labeled a 0.
   running:** adopt if it agrees with at least 32 of 34 development posts; then run the 50 test posts once
   and report the score whatever it is. If adopted, all 1,162 priority posts are relabeled with it; the
   3.6 Flash answers stay as a record and are compared with it on the posts both labeled.
-
 - **3.5 Flash-Lite (2026-11-12): 31/34 development posts, not adopted.** Misses: Eye on Ashenfall
      (next-day rule), CODE VEIN II demo update (demo rule; it labeled a demo as a patch), Sky's 7th
      Anniversary (known borderline). Test set not run.
-
 - **Back to 3.6 Flash (2026-11-13):** Lite was not adopted (31/34), so 3.6 Flash stays the adopted model;
   its 552 priority labels stand and the run resumes from there. The AI Studio rate-limit page shows peak
   usage over the last 90 days, not today's count, so the daily limit was never the problem; the blocker is
   503 overload on Google's side.
+- **Priority run complete (2026-11-15):** 1,162 of 1,162 posts from the 95 games with no patchnotes tag.
+  Gemini: 355 patches; the keyword rule: 185 (Gemini adds 216, drops 46). Games with a detected patch:
+  40 -> 51 of 95. 13 games the rule gave no patches have 96 (GTA V Enhanced 29, Overwatch 26, Aimlabs 15).
+  44 games still have none: candidates for the week-7 low-patch group after hand checks.
+  Types: content 282, bugfix 120, balance 108, technical 64, server-side 5. Spot check: pending.
 
 ### D23. Complaint topics and labeling rules (2026-11-01)
 - **A review gets a set of topics:** zero, one or several. "Combat is repetitive and the story forgettable" is two.
