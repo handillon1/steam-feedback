@@ -299,7 +299,15 @@ Beta or test-branch patches and DLC releases are both labeled a 0.
   Gemini: 355 patches; the keyword rule: 185 (Gemini adds 216, drops 46). Games with a detected patch:
   40 -> 51 of 95. 13 games the rule gave no patches have 96 (GTA V Enhanced 29, Overwatch 26, Aimlabs 15).
   44 games still have none: candidates for the week-7 low-patch group after hand checks.
-  Types: content 282, bugfix 120, balance 108, technical 64, server-side 5. Spot check: pending.
+  Types: content 282, bugfix 120, balance 108, technical 64, server-side 5. 
+- **Spot check (2026-11-25, blind, 10 posts per group):** labels made before seeing Gemini's answers,
+  then reviewed against D21 (3 of 20 corrected: Heartopia maintenance with fixes, Void War opt-in beta,
+  Siege season reveal). Gemini right on 9/10 posts it added and 8/10 it removed. All 3 disagreements
+  are about timing: whether changes were live on the post date (Siege Y11S2 addendum, CoD anti-cheat
+  update, Siege Solid Snake reveal). Each needed information from other posts. No content-rule errors.
+  Sample in data/labels/patch_spotcheck.csv.
+- **Consequence for week 7:** patch dates from single posts can be off by days to weeks. Merge each
+  game's nearby patch posts into one episode, dated by the post saying the update is live.
 
 ### D23. Complaint topics and labeling rules (2026-11-01)
 - **A review gets a set of topics:** zero, one or several. "Combat is repetitive and the story forgettable" is two.
